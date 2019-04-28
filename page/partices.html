@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>partices</title>
+</head>
+<script type="text/javascript" src='../js/lib/jquery-1.10.2.min.js'></script>
+<style type="text/css">
+	body,html{
+		width:100%;
+		height:100%;
+	}
+	.content{
+		width:450px;
+		height:350px;
+		border:1px solid #efefef;
+	}
+	canvas{
+		width:100%;
+		height:100%;
+	}
+</style>
+<body>
+	<div class="content">
+		<canvas id="mycanvas"></canvas>
+	</div>
+</body>
+<script>
+	$(function(){
+		var canvas = document.getElementById('mycanvas')
+		var cans = canvas.getContext('2d')
+		var canHeight = $('canvas').height(),canWidth = $('canvas').width(),BoddyArr=[]
+		// 随机数处理
+		function random(min,max){
+			return Math.floor(Math.random()*max+min)
+		}
+		function Boddy(){}
+		Boddy.prototype={
+			init:function(){
+				this.x = random(0,canWidth)
+				this.y = random(0,canHeight)
+				var colors = ["#58D3F7","#40FF00","#FFFF00","#FF00FF","#FF4000"]
+				this.color = colors[random(0,5)];
+				this.vx=random(-1,3)
+				this.vy=random(-1,3)
+				this.r = random(1,5)
+				this.prer = this.r
+				this.vr =2
+				this.maxr =50;
+			},
+			draw:function(){
+				cans.beginPath()
+				cans.fillStyle = this.color
+				cans.arc(this.x,this.y,this.r,0,Math.PI*2)
+				cans.fill()
+			},
+			move:function(){
+				this.x=this.x+this.vx
+				this.y = this.y+this.vy
+				if((this.x<=this.r)||(this.x+this.r>=canWidth)){
+					this.vx=-this.vx
+				}
+				if((this.y<=this.r)||(this.y+this.r>=canHeight)){
+					this.vy = -this.vy
+				}
+				this.draw()
+			}
+		}
+		function create(){
+			var boddy = new Boddy()
+			boddy.init()
+			boddy.draw()
+			BoddyArr.push(boddy)
+		}
+		for(var i=0;i<450;i++){
+			create()
+		}
+		setInterval(function(){
+			cans.clearRect(0,0,canWidth,canHeight)
+			for(var item of BoddyArr){
+				item.move()
+			}
+		},1000/20)
+	})
+</script>
+</html>

@@ -1,0 +1,4 @@
+版本说明：
+1、修复JS组件在IE9下，地图框选组件无法正常使用的Bug；
+2、简化外部JS调用，只需要引入所需要的功能组件JS即可，无需再引入基础组件；
+3、正规使用时，请用正确的appid替换“http://10.70.100.56/aiApi/resources/javascript/MapTools/api.drawlacci-1.0.2.min.js?appid=d9fe88adcc582a591610fb9312f217b0”，Demo中的只具演示功能，访问频次做了限定的

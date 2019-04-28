@@ -1,0 +1,612 @@
+a,
+address,
+b,
+big,
+blockquote,
+body,
+center,
+cite,
+code,
+dd,
+del,
+div,
+dl,
+dt,
+em,
+fieldset,
+font,
+form,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+html,
+i,
+iframe,
+img,
+ins,
+label,
+legend,
+li,
+ol,
+p,
+pre,
+small,
+span,
+strong,
+u,
+ul,
+var,
+button,
+input,
+textarea {
+    margin: 0;
+    padding: 0;
+}
+
+fieldset,
+img,
+input,
+button {
+    border: none;
+    outline-style: none;
+}
+
+ul,
+ol {
+    list-style: none;
+}
+
+input {
+    font-family: "Helvetica", " Microsoft YaHei";
+    font-size: 14px;
+}
+
+select,
+input {
+    vertical-align: middle;
+}
+
+select,
+input,
+textarea {
+    font-size: 14px;
+    outline: none;
+    resize: none;
+}
+
+img {
+    border: 0;
+    vertical-align: middle;
+}
+
+table {
+    border-collapse: collapse;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    text-decoration: none;
+    font-weight: normal;
+    font-size: 100%;
+}
+
+s,
+i,
+em {
+    font-style: normal;
+    text-decoration: none;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+button::-moz-focus-inner {
+    margin: 0;
+    padding: 0px 0 2px;
+    border: none;
+}
+span{
+    display: inline-block;
+}
+body {
+    margin:0;
+    font-family: "Helvetica", " Microsoft YaHei";
+    font-size: 14px;
+    height:100%;
+    background-color:#f3f5f7;
+    padding: 10px;
+   
+}
+*{
+    box-sizing: border-box
+}
+html{
+    height:100%;
+}
+.wid{
+    width:100%;
+}
+.indexBody{
+    height:100%;
+}
+.indexLeft{
+    height:100%;
+    width:250px;
+    float:left;
+    border:1px solid;
+    overflow:hidden;
+    background-color:#001529;
+    color:#fff;
+}
+.indexRight{
+    height:100%;
+    width: calc(100% - 255px);
+    float:right;
+}
+.indexRightNav{
+    border-bottom:1px solid;
+}
+.indexRightTop{
+    height:80px;
+    background-color:#fff;
+}
+.indexSearch{
+    height:80px;
+}
+.indexLogo{
+    height:80px;
+    border-bottom:1px solid;
+}
+.indexPage{
+    padding:15px 20px;
+    overflow-y:scroll;
+
+}
+/*本店转化transform*/
+.transfromBox{
+    height:calc(100% - 100px);
+    background-color:#fff;
+}
+/*custormers 到店顾客*/
+.customersCards{
+    height:150px;
+    padding-bottom:15px;
+}
+.cards{
+    width:30%;
+    height:100%;
+    background-color:#fff;
+    padding-right:10px;
+    float:left;
+}
+.area{
+    width:100%;
+    float:left;
+    height:450px;
+    background:#fff;
+}
+.customersArea{
+    height:280px;
+    padding-bottom:15px;
+}
+.customersCurve{
+    height:280px;
+    background:#fff;
+}
+/*店内热力图chart*/
+.charts{
+    height:560px;
+}
+.photo1 {
+    padding-bottom:15px;
+}
+.leftCol{
+    line-height:40px;
+    text-align:left;
+    padding-left:50px;
+}
+.Box {
+    height:100%;
+}
+.timeData{
+    height:280px;
+}
+.timeBox{
+    height:40px;
+}
+.timeInput{
+    height:38px;
+    border:1px solid #e4e4e4;
+    padding-left:3px;
+    line-height:38px;
+}
+.timeInput input{
+    line-height:38px;
+}
+.position{
+    position:relative;
+}
+.timeIcon{
+    color:#fdb233;
+    position:absolute;
+    right:3px;
+    top:0;
+}
+.float{
+    float:left;
+}
+.startDate,.endDate{
+    width:45%;
+    height:100%;
+}
+.timeMidder{
+    width:3%;
+    text-align:center;
+    padding:0 5px;
+}
+.input{
+    height:40px;
+    margin-bottom:10px;
+}
+.formInput{
+    height:100%;
+}
+.formInner{
+    height:100%;
+}
+.formLabel{
+    text-align:center;
+    line-height:40px;
+}
+.innerInput{
+    width: 100%;
+    height:40px;
+    margin-left: 6px;
+}
+.inputRadio{
+    line-height:40px;
+}
+    .imageBox{
+        border:1px solid #667282;
+        width:80px;
+        height:80px;
+    }
+    .imgSpan{
+        width:100%;
+        height:100%;
+        text-align: center;
+    }
+    .imgSpan i{
+        font-size:25px;
+        color:#667282;
+    }
+.innerInput .dropdown{
+        padding-top:2px;
+    }
+.innerInput .input-group{
+    padding-top:3px;
+}
+.formItemCon{
+    padding:10px 0;
+}
+.btnAdd{
+    margin-left:6px;
+}
+.inBtn{
+    width:25%;
+}
+/*userCard*/
+.userCard{
+    height:100%;
+}
+.uCardTitle{
+    height:40%;
+    padding:10px 0;
+}
+.uCardImg{
+    height:100%;
+    width:20%;
+    float:left;
+}
+.uCardN{
+    width:40%;
+    float:left;
+    height:100%
+}
+.uN{
+    width:100%;
+    padding-bottom:10px;
+}
+.uCardOther{
+    width:40%;
+    float:left;
+}
+.other{
+    width:30%;
+    height:100%;
+    float:right;
+    text-align:center;
+}
+.uCardIm{
+    height:60%;
+}
+.imcol{
+    width:100%;
+    height:50%;
+    padding:10px
+}
+.imC1{
+    width:50%;
+    height:100%;
+    float:left;
+}
+.colLabel {
+    width: 50%;
+    float: left;
+    text-align: right;
+    padding-right: 10px;
+    font-weight: bold;
+}
+.uborder{
+    border-left:1px solid #667282;
+}
+.uLe{
+    font-size:12px;
+}
+.userNum{
+    font-size:20px;
+}
+.barCol{
+    position:relative;
+    width:100%;
+    padding:1%;
+}
+.colIcon{
+    width:40px;
+    height:40px;
+    position:absolute;
+    left:0;
+}
+.colNum{
+    width:calc(100% - 40px);
+    height:50%;
+    position:absolute;
+    right:0;
+}
+.barNum{
+    height:80%;
+    background:rgb(76, 163, 238);
+    position: relative;
+}
+.barTotal{
+    position:absolute;
+    right:-30px;
+    color:rgb(76, 163, 238);
+}
+.pageBox{
+    position:relative;
+}
+/*.pageItem{
+    position:absolute;
+    border:1px solid #efefef;
+    left:0;
+    right:0;
+    bottom:0;
+    top:0;
+    margin:auto;
+    width:50%;
+    height:80%;
+    color:#fff;
+}*/
+.pageItem{
+    width:10px;
+    height:50px;
+    border:1px solid #efefef;
+}
+/*cityTitle*/
+.ecBox{
+    position:relative;
+}
+.ecBox .title{
+    position:absolute;
+    top:20px;
+    left:5%;
+    color:#fff;  
+    font-family:'Microsoft YaHei'
+}
+.ecBox .title span{
+    color:#ffa647;
+}
+
+.ecBox .title b{
+    color:#5feff4;
+}
+
+.dispie{
+    position:relative;
+}
+.dispie .disinn{
+    position:relative;
+    float:left;
+    height:100%;
+}
+.ectit{
+    position:absolute;
+    top:0;left:0;
+    width:100%;height:auto;
+    padding-left:8px;padding-top:3px;
+    font-family:'Microsoft YaHei'
+}
+.inpname{
+    position:absolute;
+    bottom:5%;left:0;
+    width:100%;height:auto;
+    text-align:center;
+    font-family:'Microsoft YaHei'
+}
+.prelegs{
+    position:absolute;
+    left:0;bottom:0;
+    width:100%;height:auto;
+}
+.prelegs li{
+    position:relative;
+    width:100%;
+}
+.hunsty{width:100%;height:100%;}
+
+.roat{
+    width:30px;
+    height:30px;
+    border-radius:50%;
+    border:1px solid #efefef;
+}
+.makBtn{
+    width: 80px;
+    height: 40px;
+    border: 1px solid #efef;
+    border-radius: 5px;
+    text-align: center;
+    line-height: 40px;
+    font-size: 15px;
+    color: #fff;
+    cursor: pointer;
+}
+.markCover{
+    position:fixed;
+    background:rgba(239,239,239,0.5);
+    z-index:1;
+    display:none;
+    animation:out 5s linear;
+}
+@keyframes out{
+    0%{
+        right:100%;
+    }
+    50%{
+        right:50%;
+    }
+    100%{
+       right:0%;
+    }
+}
+
+
+
+
+#sanjiao{
+    width:0;
+    height:0;
+    border-width:0 20px 20px;
+    border-style:solid;
+    border-color:transparent transparent #fff;
+    position:relative;
+}
+/*circe*/
+.circeBox{position:relative;}
+.circeBottom{
+    width: 100%;
+    border-bottom: 2px dashed #7e949a;
+    position: absolute;
+    bottom: 10px;
+}
+.circe{
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    position: absolute;
+    bottom: -10px;
+    left: 0;
+    right: 0;
+    margin: auto;
+}
+}
+.uncire{
+    background: #b0d5f8;  
+}
+.cireAr{
+    width:85%;
+    position:absolute;
+    left: calc( 15% + 12.5px);
+}
+.circeTop{
+    width:100%;
+    height:90%;
+    position: absolute;top:0;
+}
+.circeRight{
+    width:75%;height:100%;position: absolute;left:15%;
+}
+.circeLeft{
+    width:15%;height:100%;position: absolute;left:0;
+}
+.untime {
+    width: 50px;
+    height: 50px;
+    background: #5db269;
+    border-radius: 50%;
+    line-height: 50px;
+    text-align: center;
+    color: #fff;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    display:none;
+    left: 0;
+    right: 0;
+}
+.circeDay{
+    margin: auto;
+    position: absolute;
+    width: 70px;
+    height: 70px;
+    background: #57a2de;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 70px;
+    color: #fff;
+    font-size: 20px;
+    left: 0;
+    right: 0;
+    top: 0;
+    border: 12px solid #aecff3;
+    bottom: 0;
+}
+.selectCirce{
+    border: 3px solid #5db269;
+    width: 14px;
+    height: 14px;
+    background: #fff
+}
+.timeAr{
+    width:100%;
+    height:100%;
+    display: flex;
+}
+.timeContent{
+    flex:1;
+    position:relative
+}
+.circeContent{
+    width:100%;
+    height:90%;
+    position:relative;
+    border-bottom: 2px dashed #7e949a;
+}
+/*quadrant*/
+.sername{
+    position:absolute;
+    cursor: pointer;
+}
+.se-top-left{left:10%;top:5%;}
+.se-top-right{right:10%;top:5%;}
+.se-bottom-left{bottom:5%;left:10%;}.se-bottom-right{bottom:5%;right:10%;}

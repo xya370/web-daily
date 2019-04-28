@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>adraMap</title>
+	<script type="text/javascript" src="../js/lib/jquery-1.10.2.min.js"></script>
+</head>
+<style type="text/css">
+	html{
+		height:100%;
+	}
+	body,.map{
+		padding:0;
+		margin:0;
+		width:100%;
+		height:450px;
+	}
+</style>
+<body>
+	<div class="map" id='mapDiv'>
+		<!-- <iframe src="drawTest.min.1.0.3.html" id='parent' onload="load()"></iframe> -->
+		<!-- <input type="text" name="text" readonly vlaue='10:00~17:00'> -->
+	</div>
+</body>
+<script type="text/javascript">
+		document.getElementById('mapDiv').innerHTML='<object data="drawTest.min.1.0.3.html" type="text/html" width="100%" height="100%"></object>'
+		
+		document.onreadystatechange = loadChange
+		//判断页面是否加载完成
+		function loadChange(){
+			if(document.readyState == 'complete'){
+				// var child=document.getElementsByTagName('object')[0].contentWindow.document
+			}
+		}
+</script>
+</html>

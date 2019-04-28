@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>canvas-font</title>
+	<script type="text/javascript" src='../js/lib/jquery-1.10.2.min.js'></script>
+</head>
+<style>
+	html,body{
+		width:100%;
+		height::100%;
+	}
+	.myInput{
+		height:36px;
+		width:30%;
+	}
+	.canvas{
+		width:100%;
+		height:450px;
+		margin-top:20px;
+		border:1px solid #efefef;
+	}
+	canvas{
+		width:100%;
+		height:100%;
+	}
+</style>
+<body>
+	<div class="contain">
+		<input type="text" name="text" class='myInput'>
+		<div class="canvas">
+			<canvas id='myCanvas'></canvas>
+		</div>
+	</div>
+</body>
+<script type="text/javascript">
+	$(function(){
+		var canvas = document.getElementById('myCanvas')
+		var wid = $('canvas').width(),hid=$('canvas').height()
+		var cans = canvas.getContext('2d')
+		var col =100,row = 100,s_width = parseInt(wid/col),s_height = parseInt(hid/row),dat=[]
+		$('input').on('change',function(){
+			cans.clearRect(0,0,wid,hid)
+			var val = $('input').val()
+			cans.font='50px kait'
+			cans.fillText(val,100,100)
+			var imageData = cans.getImageData(100,100,wid,hid)
+			var data = imageData.data,partices=[]
+			cans.clearRect(0,0,wid,hid)		
+			for(var i=1 ;i<col;i++){
+				for(var j=1;j<row;j++){
+					pos=[(i*s_width -1) + (j*s_height-1)*wid]*4
+
+					// 获取有颜色的像素点信息
+					if(data[pos]>=0){
+						var partice = new Point()
+						partice.init(i,j,s_width,s_height,data,pos)
+						partice.draw()
+						partices.push(partice)
+					}
+				}
+			}
+		})
+		function Point(){}	
+		Point.prototype={
+			init:function(i,j,s_width,s_height,data,pos){
+				this.x=0+ i*s_width  //  粒子的x轴位置
+				this.y=0+ j*s_height//  粒子的y轴位置
+				this.vx=this.random(-1,3)	// 粒子的x方向移动速度
+				this.vy=this.random(-1,3)	// 粒子的y方向移动速度
+				this.r=this.random(0,5)	
+				this.fillStyle='rgba('+data[pos]+','+(data[pos+1])+','+(data[pos+2])+',1)'
+				this.currTime=new Date().getTime()  //当前时间
+				this.duration=3000	//持续时间
+				this.delay=10		// 延迟时间
+			},
+			draw:function(){
+				cans.fillStyle = this.fillStyle;
+				cans.fillRect(this.x,this.y,1,1,)
+			},
+			random:function(min,max){
+				return Math.floor(Math.random()*max+min)
+			}
+		}
+
+	})
+</script>
+</html>

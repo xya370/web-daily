@@ -1,0 +1,9 @@
+.infire{width:100%;height:100%;}
+.weathBox{box-shadow:0px -1px 6px #646565;}
+.weath-top{width:100%;height:30%;position:relative;border-bottom:1px solid #e8e8e8;}
+.weath-bottom{width:100%; height:70%;position:relative;}
+.weathpart{width:50%;height:100%;position:absolute;}
+.weath-top-left{left:0;padding-left:10px;width:calc( 50% - 10px);}.weath-top-right{right:0;}
+.topPart{height:40px;line-height:40px;}
+.weath-img{position:absolute;top:0;bottom:0;left:0;right:0;margin:auto;}
+.weath-bottom-other{position: absolute;width:80%;height:100%;left:0;right:0;margin:auto;text-align:left;padding-top:10px;}

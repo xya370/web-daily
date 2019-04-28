@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>canvas 图片粒子化</title>
+	<script type="text/javascript" src='../js/lib/jquery-1.10.2.min.js'></script>
+</head>
+<style type="text/css">
+	canvas{
+	 	background:#0c1328;
+    }
+    .block{
+    	width:100px;
+    	height:100px;
+    	border:1px solid #efefef;
+    	background:#0045ef;
+    }
+    .btn{
+    	display: inline-block;
+    	width:80px;
+    	height:38px;
+    	border:1px solid #efefef;
+    	cursor:pointer;
+    	text-align:center;
+    	line-height:40px;
+    	background:#0046df;
+    	margin-right:10px;
+    }
+</style>
+
+<body>
+	<canvas id='myCanvas' width="560" height="450">为什么不支持canvas</canvas>
+	<!-- <div class="block" id='block'></div><span class='btn' id="start">戳我</span>
+	<span class='btn' id='stop'>再戳我一下</span> -->
+</body>
+<script type="text/javascript">
+	$(function(){
+		var canvas = document.getElementById('myCanvas').getContext('2d')
+		var cWidth = $('canvas').width(),cHeight = $('canvas').height()
+		var img = new Image()
+		
+		img.src='../img/3.png'
+		img.onload=function(){
+			var imWid = img.width ,imHeight = img.height
+			canvas.drawImage(img,0,0,imWid,imHeight)
+			
+			// getImageData()获取画布像素点信息
+			var imageData = canvas.getImageData(0,0,imWid,imHeight)
+
+			var col =100,row = 100,s_width = parseInt(imWid/col),s_height = parseInt(imHeight/row)
+			var pos =0,partices=[],data=imageData.data
+			canvas.clearRect(0,0,cWidth,cHeight)
+			for(var i=1 ;i<col;i++){
+				for(var j=1;j<row;j++){
+					pos=[(i*s_width -1) + (j*s_height-1)*imWid]*4
+
+					// 获取有颜色的像素点信息
+					if(data[pos]>=0){
+						var partice = new Pratice()
+						partice.init(i,j,s_width,s_height,data,pos)
+						partice.draw()
+					}
+					partices.push(partice)
+				}
+			}
+			setInterval(function(){
+				canvas.clearRect(0,0,cWidth,cHeight)
+				for(var item of partices){
+					item.move()
+				}
+			},1000/20)
+		}
+		function Pratice(){}
+		Pratice.prototype={
+			init:function(i,j,s_width,s_height,data,pos){
+				this.x=0+ i*s_width +(Math.random()-0.5)*20  //  粒子的x轴位置
+				this.y=0+ j*s_height +(Math.random()-0.5)*20 //  粒子的y轴位置
+				this.vx=random(-1,3)	// 粒子的x方向移动速度
+				this.vy=random(-1,3)	// 粒子的y方向移动速度
+				this.r=random(0,5)	
+				this.fillStyle='rgba('+data[pos]+','+(data[pos+1])+','+(data[pos+2])+',1)'
+				this.currTime=new Date().getTime()  //当前时间
+				this.duration=3000	//持续时间
+				this.delay=10		// 延迟时间
+
+			},
+			draw:function(){
+				canvas.fillStyle = this.fillStyle;
+				canvas.fillRect(this.x,this.y,1,1,)
+			},
+			// 粒子漂浮移动 
+			move:function(){
+				this.x=this.x+this.vx
+				this.y = this.y+this.vy
+				if((this.x<=this.r)||(this.x+this.r>=cWidth)){
+					this.vx=-this.vx
+				}
+				if((this.y<=this.r)||(this.y+this.r>=cHeight)){
+					this.vy = -this.vy
+				}
+				this.draw()
+			},
+		}
+
+		// 随机数生成
+		function random(min,max){
+			return Math.floor(Math.random()*max+min)
+		}
+	})
+</script>
+</html>
