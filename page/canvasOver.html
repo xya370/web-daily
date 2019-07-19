@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+    <script type="text/javascript" src='../js/lib/jquery-1.10.2.min.js'></script>
+	</head>
+  <style>
+    html,body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    canvas {
+      width: 100%;
+      height: 100%;
+      background: #000000;
+    }
+  </style>
+	<body>
+    <canvas id="canvas"></canvas>
+	</body>
+  <script>
+    var canvas = document.getElementById('canvas')
+    var cans = canvas.getContext('2d')
+    var canHeight = $('canvas').height(),canWidth = $('canvas').width(),BoddyArr=[];
+    var allDrawCount = 40, //总绘制次数 
+        drawCount = 0, //绘制次数
+        fwx,fwy,
+        currBallIndex,
+        currenFW
+    //烟花对象
+    function fireWork() {
+      //设置初始起始点,x,y坐标
+      this.x = -1;
+      this.y = -1;
+      this.balls = [];
+    }
+    fireWork.prototype = {
+      init: function (){
+        this.x = random(20, 200);
+        this.y = random(20,200);
+        fwx = this.x; //烟花位置x坐标
+        fwy = this.y;
+        this.createBall();
+        drawCount = 0;
+        currBallIndex = 0;
+      },
+      createBall:function() {
+        for (var i = 0; i < 150; i++) {
+            var angle = Math.random() * Math.PI * 2, //角度绘制
+                radius = random(30, 70); //半径绘制
+            this.balls.push(new Ball(fwx, fwy, fwx + Math.cos(angle) * radius, fwy + Math.sin(angle) * radius));
+        }
+      },
+      run:function() {
+        this.init();
+      }
+    }
+    //ball对象
+    function Ball(sx,sy,ex,ey) {
+      this.sx = sx //开始的x坐标
+      this.sy = sy //开始的y坐标
+      this.ex = ex //结束时的x坐标
+      this.ey = ey //结束的y坐标
+    }
+    Ball.prototype = {
+      getSpan:function() {
+        var xSpan = (this.ex-this.sx) / allDrawCount;
+        var ySpan = (this.ey - this.sy) / allDrawCount;
+        return {
+          x: xSpan,
+          y: ySpan
+        }
+      },
+      //计算获取当前位置信息
+      currentPosition:function() {
+        var span = this.getSpan(),
+            currentX = -1,
+            currentY = -1;
+        if (drawCount < allDrawCount) {
+          currentX = this.sx + span.x *(drawCount -1);
+          currentY = this.sy + span.y * (drawCount -1);
+          return {
+            x : currentX,
+            y: currentY
+          }
+        }
+        return null;
+      },
+      nextPosition:function() {
+        var span = this.getSpan(),
+            currentX = -1,
+            currentY = -1;
+        if (drawCount < allDrawCount) {
+          currentX = this.sx + span.x * drawCount;
+          currentY = this.sy + span.y * drawCount;
+          return {
+            x: currentX,
+            y: currentY,
+          }
+        }
+        return null;
+      }
+    }
+    function Color () {
+      var r = Math.floor(Math.random()*255);
+      var g = Math.floor(Math.random()*255);
+      var b = Math.floor(Math.random()*255);
+      var color = 'rgba('+r +','+ g +','+ b +',1)';
+      return color
+    }
+    function random(min,max){
+      var iChoices = max - min + 1;　　
+      return Math.floor(Math.random() * iChoices + min);
+    } 
+    function draw(){
+      if(currenFW && currBallIndex !== -1) {
+        if(drawCount < allDrawCount ) {
+          cans.save()
+          drawCount++ ;
+          for(var i = 0 ; i< currenFW.balls.length ;i++ ){
+            var currenBall = currenFW.balls[i],
+              beginPosition = currenBall.currentPosition();
+              endPosition = currenBall.nextPosition();
+            if(beginPosition && endPosition) {
+              //console.log(beginPosition,endPosition,drawCount)
+              cans.beginPath();
+              cans.moveTo(currenBall.sx, currenBall.sy);
+              cans.lineTo(beginPosition.x, beginPosition.y);
+              cans.strokeStyle = "#000";
+              cans.stroke();
+              cans.beginPath();
+              cans.moveTo(beginPosition.x,beginPosition.y);
+              cans.lineTo(endPosition.x, endPosition.y);
+              cans.strokeStyle = Color();
+              cans.stroke();
+            } else {
+              cans.beginPath();
+              cans.moveTo(currenBall.sx, currenBall.sy);
+              cans.lineTo(currenBall.ex, currenBall.ey);
+              cans.strokeStyle = "#000";
+              cans.stroke();
+            }
+          }
+          currBallIndex++;
+          currBallIndex %= currenFW.balls.length;
+          cans.restore();
+        } else {
+          cans.clearRect(0, 0, canWidth, canHeight);
+          currenFW = new fireWork();
+          currenFW.run();
+        }
+      } 
+      requestAnimationFrame(draw);
+    }
+    currenFW = new fireWork();
+    currenFW.run();
+    requestAnimationFrame(draw);
+  </script>
+</html>

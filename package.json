@@ -1,0 +1,20 @@
+{
+  "name": "web-jquery",
+  "version": "1.0.0",
+  "description": "",
+  "main": "loadData.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xya370/web-daily.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/xya370/web-daily/issues"
+  },
+  "homepage": "https://github.com/xya370/web-daily#readme"
+}

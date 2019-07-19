@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>echarts</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/4.2.1/echarts-en.common.js"></script>
+	</head>
+  <style>
+    html,body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    .content {
+      width: 100%;
+      height: 300px;
+      display: flex;
+    }
+    .block {
+      flex: 1 1;
+      background:#192134;
+    }
+  </style>
+	<body>
+    <div class="content">
+      <div id="circle1" class="block"></div>
+      <div id="circle2" class="block"></div>
+      <div id="lineBar" class="block"></div>
+    </div>
+	</body>
+  <script>
+    /*
+     * 饼图
+     */
+    var icons = {
+      '1icon': 'https://gallerybox.echartsjs.com/asset/get/s/data-1559121249274-QxHDAdQGy.png',
+      '2icon': 'https://gallerybox.echartsjs.com/asset/get/s/data-1559121254241-xj5JAIBzC.png',
+      '3icon': 'https://gallerybox.echartsjs.com/asset/get/s/data-1559121259198-sxyPSimU9.png',
+    }
+    function setCircle (data, id) {
+      var opt = {
+        color: data.color,
+        series: setSeries(data),
+      }
+      var charts = echarts.init(document.getElementById(id));
+      charts.setOption(opt);
+    }
+    function setSeries (data) {
+      var series = [
+        {
+          type:"pie",
+          radius:data.radius || ['45%','55%'],
+          data:data.data,
+          center:["50%","60%"],
+          hoverAnimation: false,
+          roseType: data.roseType || false,
+          label:{
+            normal:{
+              show: data.labelShow || false,
+              textStyle:{
+                color:"#fff"
+              },
+              padding:[0, -80, 35],
+              formatter: function(params) {
+                var str = '{'+params.name+'|}'+'{rate|'+params.percent+'%}'
+                return str
+              },
+              rich: setRich(['1icon','2icon','3icon'])
+            }
+          },
+          labelLine:{
+            normal:{
+              length: 30,
+              length2:60,
+            }
+          },
+        },
+        //设置中心圆弧
+        {
+          type: 'pie',
+          radius:['25%','26%'],
+          data:[{
+            value: '0',
+            itemStyle: {
+              color: '#213254'
+            }
+          }],
+          center:["50%","60%"],
+          hoverAnimation: false,
+          label: {
+            show: false,
+          }
+        }
+      ]
+      if (data.outCircle) {
+        series.push({
+          type: 'pie',
+          radius:['65%','66%'],
+          data:[{
+            value: '0',
+            itemStyle: {
+              color: '#213254'
+            }
+          }],
+          center:["50%","60%"],
+          hoverAnimation: false,
+          label: {
+            show: false,
+          }
+        })
+      }
+      return series;
+    }
+    //饼图rich
+    function setRich (arr) {
+      var rich = new Object();
+      arr.map(function(item,index) {
+        rich[item] = {
+          width:20,
+          height:20,
+          backgroundColor: {
+              image: icons[item],
+          },
+          align: 'left'
+        }
+      })
+      rich.rate = {
+        fontSize: 14,
+        color: "#fff",
+        align: 'left',
+        padding: 4,
+      }
+      return rich;
+    }
+
+    var circle1 = {
+      labelShow: true,
+      color: ['#48fffc', '#fec834','#48bbff'],
+      radius: ['45%' , '50%'],
+      data: [{
+        name: '1icon',
+        value: '908',
+      },{
+        name: '2icon',
+        value: '456',
+      },{
+        name: '3icon',
+        value: '356',
+      }],
+    }
+    setCircle(circle1,'circle1');
+
+    var circle2 = {
+      color: ['#59C07E','#D6C444','#C67A42','#A942CE','#8E5FE9','#4B41E1' ,'#468FF4','#46E7F4'],
+      roseType: true,
+      outCircle: true,
+      data: [
+        {
+          type: '1',
+          value: '508',
+        },{
+          type: '2',
+          value: '456',
+        },{
+          type: '3',
+          value: '396',
+        },{
+          type: '4',
+          value: '376',
+        },{
+          type: '5',
+          value: '296',
+        },{
+          type: '6',
+          value: '256',
+        },
+        {
+          type: '7',
+          value: '246',
+        },{
+          type: '8',
+          value: '216',
+        },
+      ],
+    }
+    setCircle(circle2,'circle2');
+
+
+    /**
+     *折线图部分
+     */
+    var lineData = ['6723','3542','1942', '3243','4523'];
+    var options = {
+      legend: {
+        data:['收入到达', '增量贡献'],
+        textStyle: {
+          color: '#fff',
+        },
+        right: '10%',
+        top: '10%',
+      },
+      xAxis: {
+        data: ['产品一', '产品二', '产品3', '产品4','产品5'],
+        axisLine: {
+          show: false,
+        },
+        axisTick: {
+          show: false,
+        },
+        axisLabel: {
+          color: '#fff',
+        },
+      },
+      yAxis: [{
+        type: 'value',
+        name: '收入到达',
+         show: false,
+      },{
+        type: 'value',
+        name: '增量贡献',
+        show: false,
+      }],
+      series: [{
+        type:'bar',
+        data: lineData,
+        name: '收入到达',
+        barWidth: '10',
+        stack: 'a',
+        itemStyle: {
+          color: new echarts.graphic.LinearGradient(
+              0, 0, 0, 1,
+              [
+                  {offset: 0, color: '#3EEFFC'},
+                  {offset: 0.5, color: '#22C0D1'},
+                  {offset: 1, color: '#018BA0'}
+              ]
+          )
+        },
+        label: {
+          show: true,
+          position: 'top',
+          color: '#fff',
+        },
+      },
+      {
+        //设置透明堆叠,控制折线图与柱状图最高点距离
+        type:'bar',
+        data: stackData(lineData),
+        name: '收入到达',
+        barWidth: '10',
+        stack: 'a',
+        itemStyle: {
+          color: 'transparent',
+        },
+       },
+       {
+        type:'line',
+        data:['32','30','23', '25', '22'],
+        symbol:'circle',
+        yAxisIndex: 1,
+        name: '增量贡献',
+        itemStyle: {
+          color: ['#3B90FE'],
+        },
+        label: {
+          show: true,
+          position: 'top',
+          color: '#fff',
+          formatter: '{c}%',
+        },
+      }]
+    }
+    function stackData(arr) {
+      var narr = []
+      arr.map(function(item,index){
+        narr[index] = item*0.3
+      })
+      return narr
+    }
+    var charts = echarts.init(document.getElementById('lineBar'));
+    charts.setOption(options);
+  </script>
+</html>

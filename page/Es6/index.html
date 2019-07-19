@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+    <script type="text/javascript" src='../../js/lib/jquery-1.10.2.min.js'></script>
+		<title></title>
+	</head>
+  <style>
+    #content {
+      line-height: 40px;
+      font-size: 20px;
+    }
+  </style>
+	<body>
+    <div id="content"></div>
+	</body>
+  <script>
+    let [a,x,b] = [1,2,4]
+    //console.log(a,x,b)
+    let [first,] = ['john','Bob']
+    //console.log(first)
+    
+    let [v,[ix,ij],m] = ['one',['ji','str'],'if']
+    //console.log(ix)
+    {
+      let {a,b} = {a:'01',c:'02'}
+      //console.log(a,b)
+    }
+    {
+      let {a:ia,b:ib} = {a:'01',b:'02'}
+      //console.log(ia,ib)
+    }
+    {
+      function arr([x='one',y='two']) {
+        return x+y
+      }
+      //console.log(arr(['str',]))
+    }
+    {
+      const map = new Map()
+      map.set('first','one')
+      map.set('last','two')
+      for(let [key,value] of map ){
+        //console.log(key,value)
+      }
+    }
+    // ES6字符串相关
+    (function Str(){
+      // 1.字符串遍历
+      for( let code of 'hello,world') {
+        //console.log(code);
+      }
+      let breakTest = "Hello,world"
+      //模板字符
+      $('#content').append(`
+        Can you speak <i>${breakTest}</i></br>
+        this is a quertion
+      `)
+      let str = `\'UR'\, Hello`;
+      //console.log(str);
+      let ix ="Hello";
+      let ih ="World";
+      $("#content").append(`
+        ${ix + ih}
+      `)
+      const arr = ["红与黑","巴黎圣母院","悲惨世界","吉屋出租","真假公主"]
+      let templat = `
+        <ul>
+            ${arr.map((item)=>{
+               return `<li>${item}</li>`
+              }
+            )}
+        </ul>
+      `
+       $("#content").append(templat)
+       {
+         let str = "Hello world!"
+         //console.log('includes',str.includes('H'))
+         //console.log('startsWith',str.includes('Hello'))
+         //console.log('endWidth',str.includes('P'))
+         //console.log('endWidth',str.includes('!'))
+       }
+    })()
+    var twoSum = function(nums, target) {
+      for(var i =0 ;i<nums.length; i++) {
+        var j = target-nums[i]
+        var ort = nums.indexOf(j)
+        if(ort>= 0 && ort!=i ){
+            return [i,ort]
+        }
+      }
+    };
+    var nums = [-1, 0, 1, 2, -1, -4]
+    var threeSum = function(x) {
+      var ar = String(x).split('')
+       var rese = ar.reverse()
+       //console.log(rese)
+       var news =""
+       rese.map((item)=>{
+          return news +=item
+       })
+       //console.log(news)
+        return news == x ? true: false
+    };
+    {
+      var firstUniqChar = function(s) {
+        let ns = [...s],indexs=[]
+        
+        ns.findIndex((value,index,arr)=>{
+          if(arr.lastIndexOf(value) == arr.indexOf(value)) {
+            indexs.push(index);
+          }
+        })
+        var result = indexs.length > 0 ?  indexs[0] : -1;
+        //console.log(result);
+      };
+      firstUniqChar('cc');
+    }
+    {
+      var addToArrayForm = function(A, K) {
+        var ik = String(K).split('');
+        var maxLength = Math.max(A.length,ik.length);
+        var mow = new Array(maxLength)
+        for(let i =1;i<maxLength+1;i++) {
+          let r1 = +A[A.length-i]||0,r2=+ik[ik.length-i]||0
+          let result = r1+r2+(mow[mow.length-i]||0);
+          mow[mow.length-i] = result
+          if (mow[mow.length-i] >= 10){
+            mow[mow.length-i] = result-10
+            if(mow.length-i == 0 ){
+              mow.unshift(1)
+            }else {
+              mow[mow.length-i-1] = (mow[mow.length-i-1] || 0)+1 
+            }
+          }
+        }
+        //console.log(mow)
+      }
+      let arr = [1,2,6,3,0,7,1,7,1,9,7,5,6,6,4,4,0,0,6,7]
+      let arr2 = [9,9,9,9,9,9,9,9,9,]
+      let arr3=[2,1,5]
+      addToArrayForm(arr3,5090)
+    }
+    {
+      var containsNearbyDuplicate = function(nums, k) {
+        var result = false;
+        var map = new Map()
+        nums.map((item,index)=>{
+          if(map.has(item)){
+            var i = map.get(item);
+            if(Math.abs(i-index) <= k){
+              result =  true;
+            } else {
+              map.set(item,index)
+            }
+          } else {
+             map.set(item,index)
+          }
+        })
+        //console.log(result)
+      };
+      var i =[0,1,2,3,4,0,0,7,8,9,10,11,12,0]
+      let b= [1,2,3,1,2,3]
+      let c =[99,99]
+      let d =[1,0,1,1]
+      containsNearbyDuplicate(d,1)
+    }
+    {
+      var selfDividingNumbers = function(left, right) {
+        var results=[];
+        for(let i = left;i<=right;i++) {
+          var arr = String(i).split('');
+          let re =arr.map((item,index)=>{
+            if(i%item == 0){
+              return true
+            } else {
+              return false
+            }
+          })
+          if(re.indexOf(false)<0){
+            results.push(i)
+          }
+        }
+        //console.log(results)
+      };
+      selfDividingNumbers(1,22);
+    }
+    {
+      var reverseString = function(s) {
+        
+        var length = s.length-1
+        var half = length/2
+        for(let i =0;i<half;i++){
+          let n = s[i];
+          s[i] = s[length-i];
+          s[length-i] = n
+        }
+         //console.log(s)
+      }
+      let m =('hello');
+      let n ="debugger";
+      let q="AhHH,Html&Css"
+      let z ="qwertyuioplkjhgfdsazxcvbnm"
+      reverseString(z.split(''))
+    }
+    {
+      var findTheDifference = function(s, t) {
+        let nmap = new Set(s.split(''));
+        let result ='';
+        t.split('').map((item,index)=>{
+          if(!nmap.has(item)){
+            result = item
+          }
+        })
+        return result  
+      };
+      let ibj1 ={
+        s:'anscfg',
+        t: 'anscfgi'
+      }
+      let ibj2 = {
+        s:"qwertyy",
+        t:"qewenrtyy"
+      }
+     //console.log(findTheDifference(ibj2.s,ibj2.t)) 
+    }
+    {
+      var numJewelsInStones = function(J, S) {
+        let set = new Set(J.split(''));
+        let n = 0;
+        S.split('').map((item,index)=>{
+          if(set.has(item)){
+              n++;
+          }
+        })
+        //console.log(n)
+      };
+      let i= {
+        J: 'AZ',
+        S: 'AZZjsdrrtr'
+      }
+      numJewelsInStones(i.J,i.S)
+    }
+    {
+      var toLowerCase = function(str) {
+        let irr = ''
+        str.split('').forEach((item,index)=>{
+          let code = item.charCodeAt(item);
+          if(65<= code && code <=90) {
+            irr += String.fromCharCode(code+32)
+          } else{
+            irr += item
+          }
+        })
+        //console.log(irr)
+        return irr
+      };
+      var n ="Hello,World";
+      toLowerCase(n)
+    }{
+      var uniqueMorseRepresentations = function(words) {
+        let code = [".-","-...","-.-.","-..",".","..-.","--.","....","..",".---","-.-",".-..","--","-.","---",".--.","--.-",".-.","...","-","..-","...-",".--","-..-","-.--","--.."]
+        var set = new Set();
+        words.map((item)=>{
+          let unique = "";
+          [...item].map(($ite)=>{
+            let c = $ite.charCodeAt($ite);
+            unique += code[c-97]
+          })
+          set.add(unique)
+        })
+        //console.log(set.size)
+      };
+      let a = ["a","b"];
+      uniqueMorseRepresentations(a);
+    }
+    {
+      var sortedSquares = function(A) {
+        let c = A.map(i=>{
+          return i*i
+        })
+        c.sort((a,b)=>{
+          return a-b
+        })
+        /*for(let i = 0;i<c.length;i++){
+          for(let j =0;j<c.length;j++){
+             if(c[i]<c[j]) {
+              let n = c[j];
+              c[j] = c[i];
+              c[i] = n
+            }
+          }
+        }*/
+        //console.log(c)
+      };
+      let m =[-4,-2,5,7,9]
+      let b = [-4,-1,0,3,10]
+      sortedSquares(b)
+    }
+    {
+      var heightChecker = function(heights) {
+        let b =[...heights] 
+        b.sort((a,b)=>{
+            return a-b
+        })
+        let i =0
+        b.map((item,index)=>{
+            if(item !== heights[index]){
+                i++
+            }
+        })
+        //console.log(i)
+          return i;
+      };
+      let n =[1,1,4,2,1,3]
+      heightChecker(n);
+    }
+    {
+      var sortArrayByParity = function(A) {
+        let o = A.filter(n=>{
+          return n%2 == 0
+        })
+        let s = new Set(o)
+        A.map(item=>{
+          if(!s.has(item)){
+            s.add(item)
+          }
+        })
+        return Array.from(s)
+        ////console.log(s)
+      };
+      let m =[2,45,78,8,4,14]
+      let q =[1,3,56,23,50,78]
+      sortArrayByParity(q)
+    }
+    {
+      let i = "qwertyuiop".split('');
+      let b ="asdfghjkl".split('');
+      let c ="zxcvbnm".split('');
+      var arr = [i,b,c]
+      var findWords = function(words) {
+        let result = [];
+        words.map(ite=>{
+          let map = new Map();
+          for(var i of ite) {
+            map.set(i.toLowerCase(),0)
+          }
+          arr.map((item,index)=>{
+            let result = [];
+            item.map(($item)=>{
+              map.has($item)? result.push(true): '';
+            })
+            if( result.length == map.size) {
+              result.push(ite)
+            }
+          })
+        })
+        return result
+      };
+      findWords(["Hello", "Alaska", "Dad", "Peace"])
+    }
+    {
+      var minDeletionSize = function(A) {
+        let length =  A[0].length;
+        
+        let i=0,size = new Set();
+        let nA = [];
+        for(let n =0;n<length;n++) {
+          nA[n] = new Array();
+          A.map((ite,index)=>{
+            nA[n][index] = ite[n]
+          })
+        }
+        for(let m = 0;m<nA.length;m++) {
+          nA[m].sort((a,b) => {
+            if(b>a){
+              i++
+            }
+          })
+        }
+        console.log(size,i)
+      };
+      
+      let li =["cba", "daf", "ghi"];
+      ["cba","daf","ghi"]
+      let l2 = ["zyx", "wvu", "tsr"];
+      let l3 = ["rrjk","furt","guzm"];
+      let l4 = ["zyx","wvu","tsr"]
+      minDeletionSize(l3)
+    }
+    {
+      let n= 0;
+      var fib = function(N) {
+       if(N <= 1) {
+         return N;
+       }
+        return fib(N-1)+fib(N-2)
+      };
+      console.log(fib(4))
+    }
+    {
+     let s =new Map()
+    var climbStairs = function(n) {
+        if(n<=2) {
+            return n 
+        }
+       let a =1,b= 2,template = 0;
+      for(let m = 3;m<=n;m++){
+          template = a+b;
+          a=b //保存n-2的数据
+          b = template //保存n-1时的数据,
+      }
+      return template;
+        
+    }; 
+    console.log(climbStairs(4))
+    }
+    {
+      var partition = function(s) {
+          let ls = s;
+          let nar = '';
+          for(let i =0;i<ls.length+1;i++) {
+            for(let j = i+1;j<ls.length+1;j++) {
+              let o = ls.slice(i,j)
+              let ro = [...o].reverse().join('');
+              if(o === ro ){
+                let i= [o].toString();
+                nar += '['+o+']'+','
+              }
+            }
+          }
+          return nar;
+          console.log(nar)
+      };
+      let n ="aab";
+      console.log(partition(n))
+    }
+    {
+      var buddyStrings = function(A, B) {
+        if(!A || !B) {
+          return false;
+        }
+        if(A.length !== B.length) {
+          return false;
+        }else {
+          if(A === B) {
+            for(let i of A) {
+              return A.indexOf(i) !== A.lastIndexOf(i) ? true : false;
+            }
+          } else {
+            let diff=[];
+            let m =[...A];
+            for(let i = 0;i<m.length;i++) {
+              if(B[i] !== m[i]){
+                diff.push({
+                  ind: i,
+                  val:m[i]
+                })
+              }
+            }
+            if(diff.length == 1) {
+              return false ;
+            } else {
+              m[diff[0].ind] = diff[1].val
+              m[diff[1].ind] = diff[0].val
+              return m.join('') === B ? true : false
+            }
+          } 
+        }
+      };
+      buddyStrings('aa','ab')
+    }
+  </script>
+</html>

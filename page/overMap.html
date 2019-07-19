@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>overMap</title>
+  <script type="text/javascript" src="http://api.map.baidu.com/api?v=3.0&ak=DvXOya5513cRWoiSLm6HDFkMSM49kU9V"></script>
+  <script type="text/javascript" src="../js/lib/jquery-1.10.2.min.js"></script>
+</head>
+<style type="text/css">
+  html, body {
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+  }
+  .mapContent {
+    height:70%;
+    padding: 20px;
+  }
+  .icon {
+    position: absolute;
+    color: #fff;
+    /*padding:4px 5px;*/
+    top: -75%;
+    left: 30%;
+    /*background-image: url('../img/laberBg.png');*/
+  }
+  .icon img {
+    position: relative;
+    top: 0;
+    left: 0;
+  }
+  .icon .label {
+    position: absolute;
+    width: 100%;
+    z-index: 1;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+  }
+</style>
+<body>
+  <div class="mapContent" id='map'></div>
+</body>
+<script type="text/javascript">
+  var map = new BMap.Map('map');
+  var point = new BMap.Point(120.948159,30.522657000000002);
+  var center = map.centerAndZoom(point,16);
+  map.addOverlay(new BMap.Marker(point));
+  map.enableScrollWheelZoom();
+  function createOver(point, text){
+    this._point = point;
+    this._text = text;
+  };
+  createOver.prototype = new BMap.Overlay();
+  createOver.prototype.initialize =function(map) {
+    this._map = map;
+    var div = this._div = document.createElement("div");
+    div.style.position = "absolute";
+    div.style.zIndex = BMap.Overlay.getZIndex(this._point.lat);//聚合功能?
+    // 可以根据参数设置元素外观
+    div.style.height = "105px";
+    div.style.width="135px";
+
+    //label
+    var span = document.createElement('div');
+    span.className="icon";
+    //span.innerText = '自定义覆盖物';
+    var child = document.createElement('div');
+    child.className = "label";
+    child.innerText = this._text;
+    var label = document.createElement("img");
+    label.src = "../img/laberBg.png";
+    span.appendChild(child);
+    span.appendChild(label);
+
+
+    // icon
+    var marker= this._marker = document.createElement("img");
+    marker.src = "../img/marker.png";
+    marker.style.width = "40px";
+    //marker.style.height = "35px";
+    marker.style.bottom = "0";
+    marker.style.left = "0";
+
+    div.appendChild(span);
+    div.appendChild(marker);
+    map.getPanes().labelPane.appendChild(div);//getPanes(),返回值:MapPane,返回地图覆盖物容器列表
+    return div;
+  }
+  //绘制覆盖物
+  createOver.prototype.draw = function() {
+    var map = this._map;
+    var pixel = map.pointToOverlayPixel(this._point); // 将地图经纬坐标转换为图上坐标
+    console.log(this._div ,pixel);
+    this._div.style.left = pixel.x - 20 +'px';
+    this._div.style.top  = pixel.y - 50 +'px';
+  }
+  var over = new createOver(point,'文一路');
+  map.addOverlay(over)
+</script>
+</html>

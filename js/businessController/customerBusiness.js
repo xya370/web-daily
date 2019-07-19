@@ -2,7 +2,7 @@ define(['jquery','Module',"commonData"],function($,Module,commonData){
 	function ajax(option){
 		var url = option.url
 		$.ajax({
-			url:'http://aladdin.zj.chinamobile.com/city24/'+url,
+			url:'',
 			type:"post",
 			dataType:"json",
 			data:$.extend({},option.params),
@@ -223,4 +223,62 @@ define(['jquery','Module',"commonData"],function($,Module,commonData){
    		data:ndata,
         seriesName:['潜力店','旗舰店','提升店','流量店']
    	})
+    new Module({
+      type: "circlePie",
+      obj: 'customerP2',
+      data: {
+        labelShow: true,
+        data: [{
+          type: '1icn',
+          value: '908',
+        },{
+          type: '2icn',
+          value: '456',
+        },{
+          type: '3icn',
+          value: '356',
+        }],
+      }
+    })
+    new Module({
+      type: 'lineBar',
+      obj: 'customerZ2',
+      data: {
+        data:[],
+      }
+    })
+    new Module({
+      type: "circlePie",
+      obj: 'customerJ2',
+      data: {
+        color: ['#59C07E','#D6C444','#C67A42','#A942CE','#8E5FE9','#4B41E1' ,'#468FF4','#46E7F4'],
+        roseType: true,
+        data: [{
+          type: '1',
+          value: '908',
+        },{
+          type: '2',
+          value: '456',
+        },{
+          type: '3',
+          value: '396',
+        },{
+          type: '4',
+          value: '376',
+        },{
+          type: '5',
+          value: '296',
+        },{
+          type: '6',
+          value: '256',
+        },
+        {
+          type: '7',
+          value: '246',
+        },{
+          type: '8',
+          value: '216',
+        }],
+      }
+    })
 })

@@ -2,26 +2,66 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8"  http-equiv="x-UA-Compatible" content="IE=Edge">
-	<title>index</title>	
+	<title>到店顾客</title>
 	<link rel="stylesheet" type="text/css" href="../css/style.css">
+	<link rel="stylesheet" type="text/css" href="../css/font/iconfont.css">
+	<link rel="stylesheet" type="text/css" href="../css/jquery.datetimepicker.css">
+	<!-- <link rel="stylesheet" type="text/css" href="../css/bootstrap.css"> -->
+	<link rel="stylesheet" type="text/css" href="../css/fileinput.min.css">
+	<link rel="stylesheet" type="text/css" href="../css/pace-theme-center-circle.css">
+	<link rel="stylesheet" type="text/css" href="../css/date.css">
+	<script type="text/javascript" src='../js/lib/pace.min.js'></script>
+	<script type="text/javascript" src='../js/lib/bmap.js'></script>
+	<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.08&ak=DvXOya5513cRWoiSLm6HDFkMSM49kU9V"></script>
+	<script type="text/javascript" src="http://api.map.baidu.com/library/CurveLine/1.5/src/CurveLine.min.js"></script>
 </head>
+	<style type="text/css">
+		.city{
+			background:#141d2c;
+			height:450px;
+			width:50%;
+		}
+	</style>
 <body>
-	<div class="indexBody">
-		<div class="indexLeft">
-			<div class="indexLogo">logo
-				<img src="">
-			</div>
-			<div class="leftNav" id="indexNav"></div>
+	<div class="customersBox wid">
+		<div class="customersCards wid">
+			<div class="cards customersNum" id="customerA">1</div>
+			<div class="cards firstCustomers" id="customerB">2</div>
+			<div class="cards muchCustomers" id="customerC">3</div>
 		</div>
-		<div class="indexRight">
-			<div class="indexRightNav">
-				<div class="indexRightTop">商家运营管理平台</div>
-				<div class="indexSearch"></div>
-			</div>
-			<div class="indexPage wid"></div>
+
+		<div class="customersArea wid">
+			<div class=" area customPie" id="customerD" style="height:100%;width:50%"></div>
+			<div class=" area customBar" id="customerE" style="height:100%;width:50%"></div>
 		</div>
+		<div class="customersCurve wid" id='customerF'>3</div>
+		
+		<!-- <div class="customersCurve wid input" id='customerI'>FORMS</div> -->
+		<div class="customersCurve wid" id='customerJ'></div>
+		<div class="customersCurve wid" id='customerK'></div>
+		<div class="customersCurve wid input" id='customerM'></div>
+		<div class="area timeData" id="customer8" ></div>
+		<div class="area timeData" id="hallflowC"></div>
+		<div class="area timeData" id="hallflowde" style="height:150px;width:100%"></div>
+		<div class="area timeData" id="hallflowZ" style="height:350px;"></div>
+		<div class="area timeData" id="hallflowXD" style="width:35%"></div>
+		<div class="area timeData" id="hallflowXZ" style="width:65%"></div>
+		<!-- <div class="area timeData" id="customer7"></div> -->
+		
+
+		
+		<div class="customersCity wid">
+			<div class="area cityRadius city" id="customer5" style="background:#fff;"></div>
+			<div class="area citySatck city" id="customer0">22</div>
+			<div class="area cityLine city" id="customerW">22</div>
+			<div class="area cityPie  city" id="customerP" style="background:#fff;">22</div>
+			<div class="area cityPie city" id="customerP2">22</div>
+      <div class="area cityPie city" id="customerZ2">22</div>
+      <div class="area cityPie city" id="customerJ2">22</div>
+		</div>
+
 	</div>
 </body>
 <!-- 导入require模块 -->
-<script src="../js/lib/require.js" data-main="../js/project/index"></script>
+<script src="../js/lib/require.js" data-main="../js/project/customers"></script>
 </html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+	</body>
+  <script>
+    /*
+      n: 1~3 : 1
+      n: 4~8 : 2
+      n: 9  : 3
+    */
+    {
+      var bulbSwitch = function(n) {
+        return Math.floor(Math.sqrt(n))
+      }
+      console.log(bulbSwitch(6));
+    }
+    /*
+      n = 2, m =1,
+      [0,0]
+      [[1,1],[0,1],[1,0]]
+      m = 2
+      [0,0,] => [1,1] => [1,0]
+      m = 3
+      [0,0,] => [1,1] => [1,0] => [0,0]
+      m = 4
+      [0,0,] => [1,1] => [1,0] => [0,0] =>[1,0]
+    */
+    {
+      var flipLights = function(n, m) {
+      };
+    }
+    {
+      var getHint = function(secret, guess) {
+        let count = 0,c=0;
+        let ser=new Set(guess.split(''))
+        secret.split('').forEach((item,index)=>{
+          if(item == guess[index]) {
+            count++;
+          } else {
+            if(ser.has(item)) {
+              c++
+            }
+          }
+        })
+        return count+'A'+c+'B'
+      };
+      let n = {
+        s: '11',
+        g: '10'
+      }
+     console.log(getHint(n.s,n.g))
+    }
+  </script>
+</html>

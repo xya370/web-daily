@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>bMap</title>
+  >
+  <script type="text/javascript" src="http://api.map.baidu.com/api?v=3.0&ak=DvXOya5513cRWoiSLm6HDFkMSM49kU9V"></script>
+  <script type="text/javascript" src="../js/lib/jquery-1.10.2.min.js"></script>
+  <script type="text/javascript" src="http://api.map.baidu.com/library/TextIconOverlay/1.2/src/TextIconOverlay_min.js"></script>
+  <script type="text/javascript" src="http://api.map.baidu.com/library/MarkerClusterer/1.2/src/MarkerClusterer_min.js"></script>
+</head>
+<style type="text/css">
+  body,html {
+    width: 100%;
+    height: 100%;
+    padding:0;
+    margin:0;
+  }
+  #map {
+    width: 100%;
+    height: 50%;
+  }
+</style>
+<body>
+  <div id="map"></div>
+</body>
+<script type="text/javascript">
+  function Bmap(mapCtorl){
+    this.map = new BMap.Map(mapCtorl.id)
+    var point = new BMap.Point(mapCtorl.center[0],mapCtorl.center[1]);
+    this.map.centerAndZoom(point,mapCtorl.zindex); //设置地图中心点和层级；
+  };
+  Bmap.prototype = {
+    /**
+     * [init description]  init
+     * @param  {Function} callback  function
+     * @return {[type]}            [description]
+     */
+    init:function(callback){
+      callback();
+    },
+    /**
+     * [marker description]   多标记点生成
+     * @param  {[type]} points [description] arr 多点坐标
+     * @param  {[type]} icon   [description] marker 自定义图标
+     * @return {[type]}        [description]
+     */
+    marker:function(points,icon){
+      var _this = this;
+      points.map(function(item, index) {
+        var marker = new BMap.Marker(new BMap.Point(item[0],item[1]));
+         _this.map.addOverlay(marker,{icon:icon})
+      })
+    },
+    //移除覆盖物
+    remove:function(){
+      this.map.clearOverlays(); //移除覆盖物
+    },
+    /**
+     * [customOverlays description] 自定义绘制方法
+     * @param  {Function} callback [description] function
+     * @param  {[type]}   point    [description] arr 点坐标
+     * @return {[type]}            [description]
+     */
+    customOverlays: function(callback,point){
+      var _this = this;
+      function create(){};
+      //定义构造函数并继承OverLay方法；
+      create.prototype =  new BMap.Overlay();
+      // 初始化方法;
+      create.prototype.initialize = function(map){
+        var _point =this._point =  new BMap.Point(point[0],point[1]);
+        this.map = map;
+        this.div = callback(this.map,_point);
+      };
+      //绘制方法;
+      create.prototype.draw = function(map){
+        var map = this.map;
+        var pixel = map.pointToOverlayPixel(this._point); // 将地图经纬坐标转换为图上坐标
+        this.div.style.left = pixel.x - 20 +'px';
+        this.div.style.top  = pixel.y - 50 +'px';
+      }
+      var over = new create();
+      _this.map.addOverlay(over);
+    },
+    //聚合；
+    polymerize: function(points){
+      var that = this;
+      var markers = [];
+      points.map(function(item,index){
+        var pt = new BMap.Marker(new BMap.Point(item[0],item[1]));
+        markers.push(pt);
+      })
+      new BMapLib.MarkerClusterer(that.map, {markers:markers});
+    },
+    trans:function(){
+      var that = this;
+    }
+  };
+
+  //
+  var map = new Bmap({
+    id: 'map',
+    center: [120.948159,30.522657000000002],
+    zindex: 16,
+  });
+  var points = "120.946614,30.524189;120.948096,30.524135;120.949596,30.523761;120.950351,30.522089;120.950234,30.521125;120.945967,30.52128";
+  var arr = points.split(';')
+  var marker = [];
+  arr.map(function(item,index) {
+    var iar = item.split(',')
+    arr.push(iar);
+  })
+  map.init(function(){
+    map.marker(arr);
+    map.polymerize(arr)
+    console.log(map);
+    map.customOverlays(create,[120.948159,30.522657000000002]);
+    console.log(map)
+  })
+  function create(map,point) {
+    this.map = map;
+    // 生成一个新的div容器；
+    var div =  document.createElement("div");
+      //设置div样式
+      div.style.position = "absolute";
+      div.style.zIndex = BMap.Overlay.getZIndex(point.lat); //getZindex;获取当前点层级， 设置聚合时使用？
+      div.style.backgroundColor = "#EE5D5B";
+      div.style.border = "1px solid #BC3B3A";
+      div.style.color = "white";
+      div.style.height = "18px";
+      div.style.padding = "2px";
+      div.style.lineHeight = "18px";
+      div.style.whiteSpace = "nowrap";
+      div.style.MozUserSelect = "none";
+      div.style.fontSize = "12px"
+      var span = this._span = document.createElement("span");
+      div.appendChild(span);
+      span.appendChild(document.createTextNode('测试'));
+
+      var arrow = this._arrow = document.createElement("div");
+      arrow.style.background = "url(http://map.baidu.com/fwmap/upload/r/map/fwmap/static/house/images/label.png) no-repeat";
+      arrow.style.position = "absolute";
+      arrow.style.width = "11px";
+      arrow.style.height = "10px";
+      arrow.style.top = "22px";
+      arrow.style.left = "10px";
+      arrow.style.overflow = "hidden";
+
+      div.appendChild(arrow);
+      //将自定义的div塞入dom中
+      console.log(this.map.getPanes());
+      this.map.getPanes().labelPane.appendChild(div); //getPanes(),返回值:MapPane,返回地图覆盖物容器列表
+      return div;
+  }
+</script>
+</html>

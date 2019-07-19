@@ -40,7 +40,9 @@ require.config({
         'circe':'../component/circe',
         'custom':'../../js/otherJS/echarts-custom',
         'DatePicker':'../../js/otherJS/date',
-        'quadrant':'../component/quadrant'
+        'quadrant':'../component/quadrant',
+        'circlePie': '../component/circePie',
+        'lineBar': '../component/lineBar',
 	},
      shim: {
         'jquery': {
