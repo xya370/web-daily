@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>图片懒加载</title>
+  <script src="https://code.jquery.com/jquery-3.0.0.min.js"></script>
+</head>
+<style>
+  /* body {
+    display: inline-flex;
+  } */
+  .content {
+    width: 300px;
+    height: 400px;
+    overflow: auto;
+    border: 1px solid ;
+  }
+  img {
+    width: 100%;
+  }
+  #box2 {
+    width: 90%;
+    height: 700px;
+    border: 1px solid;
+    overflow: auto;
+    display: inline-flex;
+  }
+</style>
+<body>
+  <div class="content" id="box">
+    <img src="../img/defaultImg.png" alt=""  data-src = "https://cn.bing.com/th?id=OHR.RamsauWimbachklamm_ZH-CN1602837695_480x800.jpg&rf=LaDigue_1920x1080.jpg&pid=hp">
+    <img src="../img/defaultImg.png" alt=""  data-src = "https://cn.bing.com/th?id=OHR.Castelbouc_ZH-CN1475157551_480x800.jpg&rf=LaDigue_1920x1080.jpg&pid=hp">
+    <img src="../img/defaultImg.png" alt=""  data-src = "https://cn.bing.com/th?id=OHR.Slackers_ZH-CN1408656264_480x800.jpg&rf=LaDigue_1920x1080.jpg&pid=hp">
+    <img src="../img/defaultImg.png" alt=""  data-src = "https://cn.bing.com/th?id=OHR.AsburyParkNJ_ZH-CN1353073841_480x800.jpg&rf=LaDigue_1920x1080.jpg&pid=hp">
+    <img src="../img/defaultImg.png" alt=""  data-src = "https://cn.bing.com/th?id=OHR.HardeeCoFair_ZH-CN8647295545_480x800.jpg&rf=LaDigue_1920x1080.jpg&pid=hp">
+    <img src="../img/defaultImg.png" alt=""  data-src = "https://cn.bing.com/th?id=OHR.CorsiniGardens_ZH-CN8547012221_480x800.jpg&rf=LaDigue_1920x1080.jpg&pid=hp">
+  </div>
+  <div id="box2">
+    <img src="../img/defaultImg.png" alt=""  data-src = "https://cn.bing.com/th?id=OHR.RamsauWimbachklamm_ZH-CN1602837695_1920x1080.jpg&rf=LaDigue_1920x1080.jpg&pid=hp">
+    <img src="../img/defaultImg.png" alt=""  data-src = "https://cn.bing.com/th?id=OHR.Castelbouc_ZH-CN1475157551_1920x1080.jpg&rf=LaDigue_1920x1080.jpg&pid=hp">
+    <img src="../img/defaultImg.png" alt=""  data-src = "https://cn.bing.com/th?id=OHR.Slackers_ZH-CN1408656264_1920x1080.jpg&rf=LaDigue_1920x1080.jpg&pid=hp">
+    <img src="../img/defaultImg.png" alt=""  data-src = "https://cn.bing.com/th?id=OHR.AsburyParkNJ_ZH-CN1353073841_1920x1080.jpg&rf=LaDigue_1920x1080.jpg&pid=hp">
+    <img src="../img/defaultImg.png" alt=""  data-src = "https://cn.bing.com/th?id=OHR.HardeeCoFair_ZH-CN8647295545_1920x1080.jpg&rf=LaDigue_1920x1080.jpg&pid=hp">
+    <img src="../img/defaultImg.png" alt=""  data-src = "https://cn.bing.com/th?id=OHR.CorsiniGardens_ZH-CN8547012221_1920x1080.jpg&rf=LaDigue_1920x1080.jpg&pid=hp">
+  </div>
+  <img src="../img/defaultImg.png" alt=""  data-src = "https://cn.bing.com/th?id=OHR.Tegallalang_ZH-CN1855493751_1920x1080.jpg&rf=LaDigue_1920x1080.jpg&pid=hp">
+  <img src="../img/defaultImg.png" alt=""  data-src = "https://cn.bing.com/th?id=OHR.AutumnTreesNewEngland_ZH-CN1766405773_1920x1080.jpg&rf=LaDigue_1920x1080.jpg&pid=hp">
+  <img src="../img/defaultImg.png" alt=""  data-src = "https://cn.bing.com/th?id=OHR.SquirrelHeather_ZH-CN1683129884_1920x1080.jpg&rf=LaDigue_1920x1080.jpg&pid=hp">
+  <img src="../img/defaultImg.png" alt=""  data-src = "https://cn.bing.com/th?id=OHR.Vessel_EN-CN2660613445_1920x1080.jpg&rf=LaDigue_1920x1080.jpg&pid=hp">
+  <img src="../img/defaultImg.png" alt=""  data-src = "https://cn.bing.com/th?id=OHR.GuaitaTower_EN-CN7249728979_800x480.jpg">
+  <img src="../img/defaultImg.png" alt=""  data-src = "https://cn.bing.com/th?id=OSA.28162febe623c2a6e255fa0c0fe1267a&w=372&h=176&c=7&rs=2&qlt=80&cdv=1&pid=PopNow">
+</body>
+<script>
+  $(function(){
+    function imgLazy(ele){
+      var target = this.target = ele || document;
+      var parent = $(ele)[0] || $('body')[0];
+      var imgs = this.imgs = this.fifterImg($(this.target).find('img'),parent);
+      var height = this.height = $(target)[0].clientHeight || window.screen.availHeight,
+          width = this.width = $(target)[0].clientWidth || window.screen.availWidth,
+          scrollTop = this.scrollTop = $(target)[0].scrollTop || document.scrollingElement.scrollTop,
+          scrollLeft = this.scrollLeft =  $(target)[0].scrollLeft || document.scrollingElement.scrollLeft;
+      this.loadImg(imgs, [height, width], [scrollTop, scrollLeft]);
+      this.scroll()
+    }
+    imgLazy.prototype = {
+      scroll: function(){
+        var _this = this;
+        $(_this.target)[0].addEventListener('scroll',function(e){
+          var itScroll = $(e.target)[0].scrollTop || document.scrollingElement.scrollTop;
+          var ilScroll = $(e.target)[0].scrollLeft || document.scrollingElement.scrollLeft;
+          _this.loadImg(_this.imgs, [_this.height, _this.width], [itScroll, ilScroll]);
+        })
+      },
+      loadImg: function (imgs,rect,scroll) {
+        for(var img of imgs) {  
+          var offset = $(img)[0].getBoundingClientRect();
+          if(offset.top - scroll[0] < rect[0] && offset.left - scroll[1] < rect[1]) {
+            var dataSrc = $(img).attr('data-src');
+            $(img).attr('src', dataSrc)
+          }
+        }
+      },
+      //获取当前节点下的img节点
+      fifterImg: function(arr, parent) {
+        var nimgs= [];
+        for(var img of arr) {
+          if(img.parentNode === parent) {
+            nimgs.push(img)
+          }
+        }
+        return nimgs
+      },
+    }
+    new imgLazy('#box');
+    new imgLazy('#box2');
+    new imgLazy();
+  })
+</script>
+</html>

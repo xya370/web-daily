@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>clip-path</title>
+  <script type="text/javascript" src="../../js/lib/clippath.js"></script>
+</head>
+<style type="text/css">
+  .main {
+    width: 750px;
+    height: 750px;
+    display: grid;
+    grid-template-columns: auto auto auto;
+    grid-template-rows: auto auto auto;
+    grid-gap: 10px;
+  }
+  .item {
+    outline: 1px solid #bbb;
+    background: url(../../img/1.jpg) no-repeat;
+  }
+  .clip {
+    clip-path: inset(10px 50px round 5px);
+  }
+  .clip-circle {
+    clip-path: circle(80px at 50% 50%);
+  }
+  .clip-ellipse {
+    clip-path: ellipse( 90px 50px at 50% 50% );
+  }
+  .clip-polygon {
+    padding: 40px;
+    clip-path:padding-box polygon(0 38%, 100% 0, 45% 100%);
+    -webkit-clip-path: polygon(0 38%, 100% 0, 45% 100%);
+    animation: chage 2s infinite alternate;
+  }
+  @keyframes chage {
+    0%,10%{
+       clip-path:polygon(0 38%, 100% 0, 45% 100%);
+    } 50% {
+      clip-path: polygon(86% 3%, 100% 75%, 25% 100%, 0 39%);
+    }90%,100% {
+      clip-path:  polygon(70% 0, 100% 60%, 51% 100%, 0 66%, 0 19%);
+    }
+  }
+  #ces {
+    position: relative;
+    background: none;
+  }
+  #con {
+    position: absolute;
+    top: 0;bottom: 0;left: 0;right: 0;
+    background: url(../../img/1.jpg) no-repeat;
+    clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+  }
+</style>
+<body>
+  <div class="main">
+    <div class="item clip"></div>
+    <div class="item clip-circle"></div>
+    <div class="item clip-ellipse"></div>
+    <div class="item clip-polygon"></div>
+    <div class="item " id="ces">
+      <div id="con"></div>
+    </div>
+    <div class="item"></div>
+  </div>
+</body>
+<script type="text/javascript">
+</script>
+</html>

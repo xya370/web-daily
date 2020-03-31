@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+  <style>
+    canvas {
+     width: 200px;
+     height: 200px;
+     outline: 1px solid;
+    }
+  </style>
+	<body>
+    <canvas id="glcanvas"></canvas>
+    <canvas id="gl2"></canvas>
+    <canvas id="gt1"></canvas>
+	</body>
+  <script>
+    class glDraw {
+      constructor(canvas,vshader, fshader) {
+        this._canvas = canvas;
+        this.gl = this._canvas.getContext('webgl');
+        this.vshader = vshader;
+        this.fshader = fshader;
+        this.init();
+      }
+      init() {
+        let gl = this.gl;
+        // 着色器设置
+        // 顶点着色器设置
+        var VSHADER_SOURCE = this.vshader;
+        var FSHADER_SOURCE = this.fshader;
+        var program = this.program=gl.createProgram();
+        // 创建着色器
+        var vershader = gl.createShader(gl.VERTEX_SHADER);
+        var fshader = gl.createShader(gl.FRAGMENT_SHADER);
+
+        // 绑定容器
+        gl.shaderSource(vershader, VSHADER_SOURCE);
+        gl.shaderSource(fshader, FSHADER_SOURCE);
+
+        // 着色器编译
+        gl.compileShader(vershader);
+        gl.compileShader(fshader);
+
+        // 着色器载入
+        gl.attachShader(program,vershader);
+        gl.attachShader(program, fshader);
+
+        //程序链接
+        gl.linkProgram(program);
+        // 加载并使用
+        gl.useProgram(program);
+      }
+      draw(func) {
+        func()
+      }
+    }
+    (function draw1 () {
+      var cans = document.getElementById('glcanvas');
+      var vshader = `
+          void main () {
+            gl_Position = vec4(0.0, 0.0, 0.0, 1.0);
+            gl_PointSize = 10.0;
+          }
+        `;
+      var fshader = `
+       void main() {
+        gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+       }
+      `
+      let nGL = new glDraw(cans,vshader,fshader);
+      nGL.draw(()=>{
+        let gl = nGL.gl;
+        gl.clearColor(0.0,0.0,0.0,1.0);
+        gl.clear(gl.COLOR_BUFFER_BIT);
+        gl.drawArrays(gl.POINTS, 0 ,1);
+      });
+    })()
+    
+    function draw2() {
+      const cans = document.getElementById('gl2');
+      //  着色器设置；
+      const vShader = `
+        attribute vec4 a_position;
+        void main() {
+          gl_Position = a_position;
+        }
+      `;
+      const fShader = `
+        precision mediump float; //精度设置
+        void main() {
+        //       设置颜色
+          gl_FragColor = vec4(0.6, 0, 0.3, 0.4);
+        }
+      `
+      let GL = new glDraw(cans, vShader, fShader);
+      let gl = GL.gl;
+      //  获取坐标点；
+      let a_position = gl.getAttribLocation(GL.program, 'a_position');
+      if(a_position < 0) {
+        alert('Failed to get the storage location of a_position');
+        return ;
+      }
+      let dat = [0.0, 0.0, 1, 1, 1, 0, 0,0, -1, 0, -1, -1];
+      let n = initBuffer(gl, GL.program,dat,2);
+      if(n<0) {
+        alert('Failed to set the position');
+      }
+      GL.draw(()=>{
+        //     指定清除画布颜色
+        gl.clearColor(0.0,0.0,0.0,1.0);
+        //     清空canvas
+        gl.clear(gl.COLOR_BUFFER_BIT);
+        gl.drawArrays(gl.TRIANGLES, 0 , n); 
+        //     gl.TRIANGLES绘制连续的三角形，n应为3的倍数
+      });
+    }
+    function initBuffer(gl,shaderProgram,data,num) {
+      //  设置三个顶点的横纵坐标
+      //  Float32Aarray: 单精度32位浮点数
+      let vertices = new Float32Array(data);
+      let n = 6;
+      //创建缓冲区对象
+      let vertexBuffer = gl.createBuffer() 
+      if(!vertices) {
+        alert('Failed to create the buffer object');
+        return -1;
+      }
+      gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer); //绑定缓冲区对象
+      gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW); //数据写入缓冲区，vertices ---写入缓存区对象的数据， gl.ARRAY_BUFFER---目标；
+      let a_position = gl.getAttribLocation(shaderProgram, 'a_position');
+      gl.vertexAttribPointer(a_position, num, gl.FLOAT, false, 0, 0);
+      gl.enableVertexAttribArray(a_position); //开启attribute变量，连接a_position变量和分配给他的缓冲区对象；
+      return n;
+    }
+    draw2();
+    
+    function draw3() {
+      let cans = document.getElementById('gt1');
+      let vShader = `
+        attribute vec4 a_position;
+        uniform vec4 u_translation; //平移距离
+        void main() {
+          gl_Position = a_position + u_translation;
+        }
+      `
+      let Tx = 0.5 ,Ty = 0.5, Tz = 0;
+      const fShader = `
+        precision mediump float; //精度设置
+        void main() {
+          gl_FragColor = vec4(0.6, 0, 0.3, 0.4);
+        }
+      `
+      let GL = new glDraw(cans, vShader, fShader);
+      let gl = GL.gl;
+      //  获取坐标点
+      let a_position = gl.getAttribLocation(GL.program, 'a_position');
+      let u_Translation = gl.getUniformLocation(GL.program, 'u_translation');
+      gl.uniform4f(u_Translation, Tx, Ty, Tz, 0.0)
+      if(a_position < 0) {
+        alert('Failed to get the storage location of a_position');
+        return ;
+      }
+      let dt= [0.5, 0.5, 1, 0, 1, 0.5]
+      let n = initBuffer(gl, GL.program,dt,2);
+      if(n<0) {
+        alert('Failed to set the position');
+      }
+      GL.draw(()=>{
+        //     指定清除画布颜色
+        gl.clearColor(0.0,0.0,0.0,1.0);
+        //     清空canvas
+        gl.clear(gl.COLOR_BUFFER_BIT);
+        gl.drawArrays(gl.TRIANGLES, 0 , n); 
+        //     gl.TRIANGLES绘制连续的三角形，n应为3的倍数
+      });
+    }
+    draw3()
+  </script>
+</html>

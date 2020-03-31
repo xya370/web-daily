@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="utf-8">
-		<title></title>
-	</head>
-	<body>
-	</body>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+  </body>
   <script>
     /*
       n: 1~3 : 1
@@ -30,29 +30,675 @@
       [0,0,] => [1,1] => [1,0] => [0,0] =>[1,0]
     */
     {
-      var flipLights = function(n, m) {
-      };
-    }
+      var flipLights = function(n, m) {};
+    } 
     {
       var getHint = function(secret, guess) {
-        let count = 0,c=0;
-        let ser=new Set(guess.split(''))
-        secret.split('').forEach((item,index)=>{
-          if(item == guess[index]) {
+        let count = 0,
+          c = 0;
+        let ser = new Set(guess.split(''))
+        secret.split('').forEach((item, index) => {
+          if (item == guess[index]) {
             count++;
           } else {
-            if(ser.has(item)) {
+            if (ser.has(item)) {
               c++
             }
           }
         })
-        return count+'A'+c+'B'
+        return count + 'A' + c + 'B'
       };
       let n = {
         s: '11',
         g: '10'
       }
-     console.log(getHint(n.s,n.g))
+      console.log(getHint(n.s, n.g))
+    } 
+    {
+      var solveEquation = function(equation) {
+        let left = equation.split('=')[0];
+        let right = equation.split('=')[1];
+        left = left[0] !== '-' ? '+' + left : left;
+        right = right[0] !== '-' ? '+' + right : right;
+        let lx = left.match(/(\-|\+?)+([0-9]{0,100}?)x/g) || [],
+          lnums = left.replace(/(\-|\+?)+([0-9]{0,100}?)x/g, '&').match(/(\-|\+?)+[0-9]{0,100}/g) || [0];
+        let rx = right.match(/(\-|\+?)+([0-9]{0,100}?)x/g) || [],
+          rnums = right.replace(/(\-|\+?)+([0-9]{0,100}?)x/g, '&').match(/(\-|\+?)+[0-9]{0,100}/g) || [0];
+        rx = rx.map((item) => {
+          if (item[0] == '+') {
+            return item.replace(/\+/g, '-')
+          } else if (item[0] == '-') {
+            return item.replace(/\-/g, '+')
+          } else if (item == 'x') {
+            return '-x'
+          } else {
+            return item
+          }
+        })
+        lnums = lnums.map(item => {
+          if (item[0] == '+') {
+            return item.replace(/\+/g, '-')
+          } else if (item[0] == '-') {
+            return item.replace(/\-/g, '+')
+          } else {
+            return item
+          }
+        })
+        let xx = [...lx, ...rx],
+          nums = [...lnums, ...rnums];
+        let nleft = 0,
+          nright = 0
+        for (let ix of xx) {
+          let adds = ix.split('x')[0]
+          if ((ix.split('x')[0]) == '+' || (ix.split('x')[0]) == '-') {
+            adds = ix.split('x')[0] == '+' ? 1 : '-1'
+          }
+          nleft += +adds
+        }
+        for (let ir of nums) {
+          nright += +ir
+        }
+        if (nleft == '0' && nright == '0') {
+          return 'Infinite solutions'
+        } else if (nleft == '0') {
+          return 'No solution'
+        } else {
+          return 'x=' + (nright / nleft)
+        }
+      };
+      let iu = '2x=x'
+      let ie = 'x=x'
+      let iu1 = 'x+5-3+x=6+x-2'
+      let iu3 = '2x+3x-6x=x+2'
+      let iu4 = "3x=33+22+11"
+      let iu5 = "2-x+x+3x=2x-x+x+3"
+      console.log(solveEquation(iu5))
+    } 
+    {
+      var updateBoard = function(board, click) {
+        if (board[click[0]][click[1]] == 'M') {
+          board[click[0]][click[1]] = 'X';
+          return board;
+        } else {
+          let center = click;
+          let ty = center[0] - 1,
+            by = center[0] + 1,
+            tx = center[1] - 1,
+            bx = center[1] + 1,
+            points = [];
+          for (let y = ty; y <= by; y++) {
+            for (let x = tx; x <= bx; x++) {
+              if (board[y]) {
+                let i = 0;
+                if (board[y][x] == "M") {
+                  ++i
+                  let y0 = y - 1,
+                    y1 = y + 1,
+                    x0 = x - 1,
+                    x1 = x + 1;
+                  for (let iy = y0; iy <= y1; iy++) {
+                    for (let ix = x0; ix <= x1; ix++) {
+                      if (board[iy][ix] != "M") {
+                        board[iy][ix] = i
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+          console.log(board)
+        }
+      };
+      /**
+       * [
+       *   [0,1,1,1,0],
+       *   [0,2,Z,2,0],
+       *   [0,2,Z,2,0],
+       *   [0,1,1,1,0]
+       * ]
+       * 
+       */
+      let b1 = [
+        ['E', 'E', 'E', 'E', 'E'],
+        ['E', 'E', 'M', 'E', 'E'],
+        ['E', 'E', 'M', 'E', 'E'],
+        ['E', 'E', 'E', 'E', 'E']
+      ]
+      let c1 = [2, 1]
+      updateBoard(b1, c1)
+    } 
+    {
+      var findKthLargest = function(nums, k) {
+        return nums.sort((a, b) => {
+          return b - a
+        })[k - 1]
+        // let pro = Math.floor(nums.length/2);
+        // let left = [],right=[];
+        // // let ar=nums.slice(0,pro);ar2 = nums.slice(pro);
+        // let i =0,o=0;
+        // while(i<nums.length) {
+        //   if(nums[i]<nums[pro] ) {
+        //     left.push(nums[i])
+        //   } else {
+        //     right.push(nums[i])
+        //   }
+        //   i++
+        // }
+        // console.log(right,left,qsort(right))
+      }
+
+      function qsort(arr) {
+        if (arr.length <= 1) {
+          return arr
+        }
+        let pro = Math.floor(arr.length / 2);
+        let left = [],
+          right = [];
+        // let ararr.slice(0,pro);ar2 =arr.slice(pro);
+        let i = 0,
+          o = 0;
+        while (i < arr.length) {
+          if (arr[i] < arr[pro]) {
+            left.push(arr[i])
+          } else {
+            right.push(arr[i])
+          }
+          i++
+        }
+        return qsort(left).concat(qsort(right))
+      }
+      let m = [3, 2, 3, 1, 2, 4, 5, 5, 6];
+      findKthLargest(m)
+    } 
+    {
+      var sortColors = function(nums) {
+        let l = 0,
+          r = 0,
+          w = 0,
+          r1 = [],
+          l1 = [],
+          w1 = [];
+        for (let i = 0; i < nums.length; i++) {
+          if (nums[i] == 0) {
+            r++
+          }
+          if (nums[i] == 1) {
+            w++
+          }
+          if (nums[i] == 2) {
+            l++
+          }
+        }
+        let i = m = n = 0
+        while (i < r) {
+          r1.push(0);
+          i++
+        }
+        while (m < w) {
+          w1.push(1);
+          m++
+        }
+        while (n < l) {
+          l1.push(2);
+          n++
+        }
+        return r1.concat(w1, l1)
+      };
+      let n = [2, 0, 2, 1, 1, 0];
+      console.log(sortColors(n))
+    } 
+    {
+      var multiply = function(num1, num2) {
+
+      };
+      // `"121932631112635269"
+      // 1083676269
+      let o = "123456789";
+      let q = "987654321";
+      let n = "13"
+      let m = "21"
+      multiply(o, n)
+    } 
+    {
+      var data = [1, 0, 3, 54, 6, 85, 89, 90, 5817, 34, 67, 90, 829, 78, 49, 234, 567, 23, 12, 3450];
+
+      function getMax(data) {
+        var length = data.length;
+        var midIndex = Math.floor(length / 2);
+        var mid = data[midIndex];
+        var i = 0;
+        var max, min;
+        while (i < length) {
+          var value = data[i++];
+          if (value >= mid) {
+            if (typeof max == "undefined" || max <= value) {
+              max = value;
+            }
+          }
+          if (value <= mid) {
+            if (typeof min == "undefined" || value <= min) {
+              min = value;
+            }
+          }
+        }
+        return {
+          max: max,
+          min: min,
+        }
+      }
+
+      // var data = [];
+      // for (var i = 0; i < 112; i++) {
+      //   data.push(i)
+      // }
+
+      function random_1(data) {
+        var len = data.length;
+        for (var i = 0; i < len; i++) {
+          var nextIndex = Math.floor(Math.random() * (len))
+          var preValue = data[i];
+          data[i] = data[nextIndex];
+          data[nextIndex] = preValue;
+        }
+        return data
+      }
+      var ndata = random_1(data);
+
+      function random_2(data) {
+        var len = data.length;
+        for (var i = 0; i < len; i++) {
+          var nextIndex = Math.floor(Math.random() * (len - i))
+          var preValue = data[i];
+          data[i] = data[nextIndex];
+          data[nextIndex] = preValue;
+        }
+        return data
+      }
+      console.log(random_2(data))
+
+      function random_3(data) {
+        return data.sort(function(a, b) {
+          var index = Math.floor(Math.random() * data.length);
+          return a - Math.random() * data[index]
+        })
+      }
+      console.log(random_3(data))
+
+      function random_4(data) {
+        var ndata = [];
+        while (data.length > 0) {
+          var index = Math.floor(Math.random() * data.length);
+          ndata.push(data[index]);
+          data.splice(index, 1)
+        }
+        return ndata;
+      }
+      console.log(random_4(data))
+
+      function sort_1(data) {
+        for (var i = 0; i < data.length; i++) {
+          for (var j = 0; j < data.length - i - 1; j++) {
+            if (data[j] > data[j + 1]) {
+              var temp = data[j + 1];
+              data[j + 1] = data[j];
+              data[j] = temp;
+            }
+          }
+          console.log(data)
+        }
+      }
+
+      function shell_sort(data) {
+        var len = data.length;
+        for (var dep = Math.floor(len / 2); dep > 0; dep = Math.floor(dep / 2)) {
+          // console.log(dep)
+          for (var i = dep; i < data.length; i++) {
+            for (var j = i - dep; j >= 0; j -= dep) {
+              if (data[j] > data[j + dep]) {
+                var temp = data[j + dep];
+                data[j + dep] = data[j];
+                data[j] = temp;
+              }
+            }
+          }
+          // console.log(data)
+        }
+        return data
+      }
+      console.log(shell_sort([49, 38, 65, 101, 76, 13, 27, 49, 55, 1]))
+    } 
+    {
+      function fn(require, exports, module) {
+        // require("c.js")
+        var age = "30";
+        var b = require("b.js");
+        exports.age = age;
+      }
+
+      var str = fn.toString();
+      var REQUIRE_RE = /\brequire\s*\(\s*(["'])(.+?)\1\s*\)/g;
+      var rep = /\/\*[\s\S]*\*\/|\/\/.*/g;
+
+      str.replace(rep, "").replace(REQUIRE_RE, function(context, m1, m2) {
+        console.log(m2) // => c.js  b.js
+      })
+    } 
+    {
+      var i = 0;
+
+      function search(data, target) {
+        var start = 0;
+        var end = data.length;
+        while (start < end) {
+          i++
+          var midIndex = Math.floor((start + end) / 2);
+          var mid = data[midIndex];
+          if (target < mid) {
+            end = midIndex - 1;
+          } else if (target > mid) {
+            start = mid + 1;
+          } else {
+            return midIndex
+          }
+        }
+        return i;
+      }
+      var data = [];
+      for (var i = 0; i < 12345; i++) {
+        data.push(i)
+      }
+      console.log(search(data, 10))
+    } 
+    {
+      function change(str) {
+        var rex = /(?=(?!\b)(\d{3})+$)/g
+        return String(str).replace(rex, ',')
+      }
+      console.log(change(1234578))
+    }
+    {
+      function quickFind(nums, k) {
+        var start = 0,
+          end = nums.length;
+        var index = 0
+        while (start < end) {
+          index++;
+          var midIndex = Math.floor(start + (end - start) / 2);
+          var mid = nums[midIndex];
+          if (mid == k) {
+            return midIndex
+          } else if (mid > k) {
+            end = midIndex;
+          } else if (k > mid) {
+            start = midIndex;
+          }
+        }
+      }
+      var data = [];
+      for (var i = 0; i < 12345; i++) {
+        data.push(i);
+      }
+      console.log(quickFind(data, 65))
+    } 
+    {
+      function quickSort(arr) {
+        if (arr.length <= 1) return arr;
+        var midIndex = Math.floor(arr.length / 2);
+        var mid = arr.splice(midIndex, 1)[0];
+        var i = 0,
+          left = [],
+          right = [];
+        while (i < arr.length) {
+          var target = arr[i++]
+          if (target <= mid) {
+            left.push(target)
+          } else {
+            right.push(target);
+          }
+        }
+        return quickSort(left).concat([mid], quickSort(right));
+      }
+
+      function getMax(arr) {
+        return quickSort(arr)[arr.length - 1]
+      }
+
+      function getMin(arr) {
+        return quickSort(arr)[0]
+      }
+      var data = [1, 0, 3, 54, 6, 85, 89, 90, 5817, 34, 67, 90, 829, 78, 49, 234, 567, 23, 12, 3450]
+      console.log(getMax(data), getMin(data))
+      // quickGet([1,0,3,54,6,85,89,90,5817,34,67,90,829,78,49,234,567,23,12,3450]);
+    }
+    {
+      function meger(arr) {
+        if (arr.length < 2) return arr;
+        var midIndex = Math.floor(arr.length / 2);
+        var mid = arr[mid];
+        var left = arr.slice(0, midIndex);
+        let right = arr.slice(midIndex, arr.length);
+        // console.log(left, right)
+        return merge(meger(left), meger(right))
+      }
+
+      function merge(left, right) {
+        var i = 0,
+          j = 0,
+          nArr = [];
+        while (i < left.length && j < right.length) {
+          if (left[i] < right[j]) {
+            nArr.push(left[i]);
+            i++
+          } else {
+            nArr.push(right[j]);
+            j++;
+          }
+        }
+        if (i == left.length) {
+          nArr = nArr.concat(right.slice(j))
+        }
+        if (j == right.length) {
+          nArr = nArr.concat(left.slice(i))
+        }
+        return nArr;
+      }
+
+      console.log(meger([1, 0, 3, 54, 6, 85, 89, 90, 5817, 34, 67, 90, 829, 78, 49, 234, 567, 23, 12, 3450]))
+    }
+    {
+      function popSoft(arr) {
+        for (var i = 0; i < arr.length; i++) {
+          for (var j = 0; j < arr.length - 1; j++) {
+            if (arr[i] < arr[j]) {
+              var temp = arr[i];
+              arr[i] = arr[j];
+              arr[j] = temp;
+            }
+          }
+        }
+        return arr;
+      }
+      console.log(popSoft([1, 0, 3, 54, 6, 85, 89, 90, 5817, 34, 67, 90, 829, 78, 49, 234, 567, 23, 12, 3450]))
+    }
+    {
+      function getData(){
+        console.log("ASCE")
+        return "data"
+      }
+      async function fn(){
+        let data = await getData();
+        // let data1 = await getData2();
+        console.log(data);
+      }
+      fn();
+      console.log("async");
+      
+     function getData2(){
+        return new Promise((resolve)=>{
+          resolve("data1")
+          console.log("ASCE")
+        })
+      }
+      // async function fn(){
+      //   let data = await getData();
+      //   console.log(data);
+      // }
+      // fn();
+      // console.log("async");
+    }
+    {
+      function getDate(){
+        console.log("awaitFunction");
+        return 1234
+      }
+      function fn(){
+        console.log("start")
+        return new Promise((resolve)=>{
+          console.log("promise")
+          resolve(getDate())
+          console.log("then")
+        }).then((res)=>{
+          console.log(res);
+          console.log("end")
+        })
+      }
+      fn();
+      console.log("script")
+    }
+    {
+      function getDate(){
+        console.log("awaitFunction");
+        return new Promise((resolve, reject)=>{
+          reject("error")
+        })
+      }
+      async function fn(){
+        console.log("start")
+        try{
+          var iad = await getDate();
+          console.log(iad);
+        } catch(error){
+          console.log(error)
+        }
+
+        console.log("end")
+      }
+      fn();
+      console.log("script")
+    }
+    {
+      var data =  [{
+        ids:'a337',
+        type:'layout',
+        span:16,
+        data:[],
+        componentName:'viewLayout',
+        component:null,
+        children:[]
+      },{
+        ids:'8479',
+        type:'layout',
+        span:16,
+        data:[],
+        componentName:'viewLayout',
+        component:null,
+        children:[]
+      },{
+        ids:'8439',
+        type:'layout',
+        span:16,
+        data:[],
+        componentName:'viewLayout',
+        component:null,
+        children:[
+          {
+            ids:'a3327',
+            type:'layout',
+            span:16,
+            data:[],
+            componentName:'viewLayout',
+            component:null,
+            children:[]
+          },{
+            ids:'84729',
+            type:'layout',
+            span:16,
+            data:[],
+            componentName:'viewLayout',
+            component:null,
+            children:[
+              {
+                ids:'a1337',
+                type:'layout',
+                span:16,
+                data:[],
+                componentName:'viewLayout',
+                component:null,
+                children:[]
+              },{
+                ids:'81479',
+                type:'layout',
+                span:16,
+                data:[],
+                componentName:'viewLayout',
+                component:null,
+                children:[]
+              },{
+                ids:'84391',
+                type:'layout',
+                span:16,
+                data:[],
+                componentName:'viewLayout',
+                component:null,
+                children:[]
+              }
+            ]
+          },{
+            ids:'84329',
+            type:'layout',
+            span:16,
+            data:[],
+            componentName:'viewLayout',
+            component:null,
+            children:[]
+          }
+        ]
+      }]
+      /* [{
+        ids: "",
+        children: [],
+        data: [],
+      },{
+        ids: "",
+        children: [],
+        data: [],
+      },{}]*/
+      function findIndex(data, ids){
+        var root = "";
+        function fn(data, parentIndex = "", ids) {
+          if (data.length <= 0) return;
+          root += parentIndex + '_';
+          var i = 0;
+          for(var i = 0; i < data.length;i++){
+            var item = data[i];
+            if (item.ids == ids){
+              root += "true"
+              return
+            }
+            if(item.data.length > 0 ) {
+              fn(item.data,i,ids);
+            }
+            if (item.children.length > 0) {
+              fn(item.children, i,ids)
+            }
+          }
+          return root
+
+        }
+        return fn(data,"",ids)
+      }
+      console.log(findIndex(data, "a1337"))
     }
   </script>
 </html>

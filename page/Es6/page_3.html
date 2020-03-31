@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>page_css_shape</title>
+</head>
+<style type="text/css">
+  .main {}
+  .shape {
+    width: 200px;
+    height: 200px;
+    float: left;
+    background: url('https://cn.bing.com/th?id=OHR.qixi_ZH-CN3534017617_1920x1080.jpg&rf=LaDigue_1920x1080.jpg&pid=hp') no-repeat;
+    border-radius: 50%;
+  }
+  .shape1 {
+    shape-outside: circle(50%);
+    /*shape-outside: circle(5px at 50% 50%);*/
+    /*shape-outside: ellipse(10% 20% at 50% 50%);*/
+    /*shape-outside: ellipse(20%);*/
+    /*shape-outside: inset(20px 10px round 10%);*/
+    /*shape-outside: polygon(40% 0, 100% 0,50% 50%);*/
+    /*shape-outside: padding-box;*/
+   /* shape-outside: margin-box;
+    shape-outside: content-box;
+    shape-outside: border-box;
+    padding: 10px;
+    margin: 10px;*/
+    /*shape-outside: url(https://cn.bing.com/th?id=OHR.qixi_ZH-CN3534017617_1920x1080.jpg&rf=LaDigue_1920x1080.jpg&pid=hp);*/
+    /*shape-image-threshold: 0.5;*/
+  }
+  p {
+    margin: 0;
+  }
+  .grid {
+    display: inline-grid;
+    /*//?????/
+    /*grid-template-columns: auto auto auto;*/
+    /*1??2??1??/
+    /*grid-template-columns: 1fr 1fr 1fr;*/
+    /*repeat(?要????拇?????要??????|模式)*/
+    grid-template-columns: repeat(3,minmax(100px, 1fr));
+    /*grid-template-columns: repeat(auto-fill, 100px);*/
+    /*autofill ?丶??????????/
+    /*grid-template-columns: repeat(autofill,1fr);*/
+    /*grid-template-rows: auto auto auto;*/
+    /*2? 1? 0.5?*/
+    /*grid-template-rows: 1fr 1fr 1fr;*/
+    grid-gap: 10px;
+    width: 600px;
+    height: 600px;
+  }
+  .grid-item, .grid2-item{
+    border: 1px solid #bbb;
+  }
+  .grid2 {
+    display: inline-grid;
+    grid-template-columns: [c1] 1fr [c2] 1fr [c3] 1fr [c4];
+    grid-template-rows: [r1] 1fr [r2] 1fr [r3] 1fr [r4];
+    width: 600px;
+    height: 600px;
+    grid-gap: 10px;
+    grid-template-areas: 'a a a' 'b b b' 'c c c';
+  }
+  .grid2_4 {
+    /*grid-area: a;*/
+    grid-area: 1 / 1 / 3 / 3 ;
+    background: url(https://cn.bing.com/th?id=OHR.qixi_ZH-CN3534017617_1920x1080.jpg&rf=LaDigue_1920x1080.jpg&pid=hp) no-repeat;
+    background-size: cover
+  }
+  .grid2_1 {
+    grid-column-start: 2;
+    grid-column-end: 4;
+  }
+  .box {
+    width: 600px;
+    aspect-ratio: 1/1
+  }
+  /*img{
+    width:100%;
+  }*/
+  .border {
+    width: 200px;
+    height: 150px;
+    text-align: center;
+    /*line-height:  150px;*/
+    display: inline-block;
+    box-sizing: border-box;
+  }
+  .border1 {
+    outline: 1px #000 solid;
+  }
+  .border2::after{
+    content: '';
+    position: absolute;
+    left: -1px;
+    right: -1px;
+    top: -1px;
+    bottom: -1px;
+    background: #000;
+    z-index: -1;
+  }
+  .border2 {
+    background: #fff;
+    position: relative;
+  }
+  .border3 {
+    box-shadow: 0 0 1px #000
+  }
+  .border4 {
+    border: 1px solid transparent;
+    border-image: linear-gradient(to right, #000, #000) 10% round;
+  }
+  .color1 {
+    width: 180px;
+    height: 140px;
+    border: 5px solid red;
+    outline: 5px solid  orange;
+  }
+  .color2 {
+    width: 180px;
+    height: 140px;
+    border: 5px solid red;
+    box-shadow:0 0 0 5px orange;
+  }
+  .color3 {
+    padding: 5px;
+    border: 5px solid transparent;
+    background: linear-gradient(to right, #fff, #fff),linear-gradient(to right, red, red),orange;
+    background-clip: content-box,padding-box,border-box;
+  }
+  .border_filter {
+   border: 30px solid rgba(0,0,0,0.03);
+    background-origin: border-box;
+    background-clip: padding-box;
+    position: relative;
+  }
+  .border_filter::after {
+    content: '';
+    position: absolute;
+    top: -30px;
+    bottom: -30px;
+    right: -30px;
+    left: -30px;
+    filter: blur(9px);
+    background: inherit;
+    border: inherit;
+    background-clip: border-box;
+    border-color: transparent;
+    z-index: -1;
+  }
+  .grid-border {
+    background:#fff;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+    position: relative;
+    border-radius: 5px;
+  }
+  .grid-border::after {
+    position: absolute;
+    content: '';
+    top: -2px;
+    bottom: -2px;
+    left: -2px;
+    right: -2px;
+    background: linear-gradient(60deg, #f79533, #f37055, #ef4e7b, #a166ab, #5073b8, #1098ad, #07b39b, #6fba82);
+    z-index: -1;
+    border-radius: 5px;
+  }
+  .grid-border2 {
+    background:#fff;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+    position: relative;
+    border-radius: 5px;
+  }
+  .grid-border2::after {
+    position: absolute;
+    content: '';
+    top: -2px;
+    bottom: -2px;
+    left: -2px;
+    right: -2px;
+    background: linear-gradient(to right, #ff7c2d 3%, #ff016e 97%);
+    z-index: -1;
+    border-radius: 5px;
+    animation: filt 1s linear infinite;
+  }
+  @keyframes filt {
+    from {
+      /*hue-rotate 色相旋转函数*/
+      filter: hue-rotate(0deg);
+    } to {
+      filter: hue-rotate(360deg);
+    }
+  }
+  .grid-transform {
+    position: relative;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+    background: #fff;
+  }
+  .grid-transform::after {
+    position: absolute;
+    content: '';
+    bottom: -4px;
+    top: -4px;
+    left: -4px;
+    right: -4px;
+    background: linear-gradient(to left,#b0ac87,#99b386);
+    z-index: -1;
+    transform: skew(3deg, 1deg);
+  }
+  .trans1::after {
+    transform: translate3d(0px, 5px, 3px)
+  }
+  .grid-circle {
+    position: relative;
+    overflow: hidden;
+    background: orange;
+    border: none;
+  }
+  .grid-circle::after {
+    position:absolute;
+    background: #fff;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    content:'';
+    top: -20px;
+    left: -20px;
+  }
+  .linear {
+    border: none;
+    /*如果从浏览器中打开观察，就会发现，这是将整个区域划分为4块，分别对应，linear-gradient(指定每个区块渐变的角度，起始色块-对应色块范围，结束色块)*/
+    background: linear-gradient(135deg, transparent 10px, #c00 0) top left,
+        linear-gradient(225deg, transparent 10px, #c00 0) top right,
+        linear-gradient(315deg, transparent 10px, #c00 0) bottom right,
+        linear-gradient(45deg, transparent 10px, #c00 0) bottom left;
+    background-size: 50% 50%; background-repeat: no-repeat; }
+    .back-border {
+      background: linear-gradient(to left,#b0ac87,#99b386);
+      /*wdith: 600px;*/
+      height: 30px;
+      position: relative;
+      border: none;
+    }
+    .back-border::after {
+      position:absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      content: '';
+      background: radial-gradient(circle at -5px -5px,transparent 12px,#fff 10px);
+      background-size: 10px 10px;
+      background-repeat:  repeat-x;
+      height: 10px;
+    }
+    .other-box {
+      margin-top: 10px;
+      width: 600px;
+      height: 40px;
+      background: linear-gradient(to left,#b0ac87,#99b386);
+      position: relative;
+    }
+    .other-box::after {
+      position: absolute;
+      content: '';
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 20px;
+      background: red;
+      background: radial-gradient(circle at 10px 0px,transparent 5px, #fff 10px);
+      background-repeat: repeat-x;
+      background-size: 20px 20px;
+    }
+    .out-line,.out-line2{
+      border: 10px solid transparent;
+      outline: 1px solid #d23;
+      background: #fff;
+      background-clip: padding-box;
+      position: relative;
+    }
+    .out-line::after {
+      position:absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      content: '';
+      outline: 1px solid #d23;
+    }
+    .box1 {
+      margin: 20px 10px;
+      width: 600px;
+      height: 350px;
+    }
+    .geid {
+      border: none;
+      box-shadow: inset 0 0 0 1px #00DD1C;
+    }
+    @keyframes trans {
+    }
+</style>
+<body>
+  <h3>css-shape</h3>
+  <div class="main">
+    <div class="shape shape1"></div>
+    <p>蒹葭苍苍</p>
+    <p>白露为霜</p>
+    <p>所谓伊人</p>
+    <p>在水一方</p>
+    <p>蒹葭苍苍</p>
+    <p>白露未已</p>
+    <p>所谓伊人</p>
+    <p>在水之湄</p>
+  </div>
+  <hr/>
+  <div class="grid">
+    <div class="grid-item grid-border trans1">1</div>
+    <div class="grid-item grid-circle">2</div>
+    <div class="grid-item linear">3</div>
+    <div class="grid-item round">4</div>
+    <div class="grid-item">5</div>
+    <div class="grid-item">6</div>
+    <div class="grid-item">7</div>
+    <div class="grid-item">8</div>
+    <div class="grid-item geid">9</div>
+  </div>
+  <hr/>
+  <div class="grid2">
+    <div class="grid2-item grid-border">1</div>
+    <div class="grid2-item grid-border2">2</div>
+    <div class="grid2-item grid-transform">3</div>
+    <div class="grid2-item grid2_4 border_filter"></div>
+    <div class="grid2-item out-line">5</div>
+    <div class="grid2-item out-line2">6</div>
+    <div class="grid2-item grid2_1">7</div>
+    <div class="grid2-item">8</div>
+    <div class="grid2-item">9</div>
+  </div>
+  <!-- <hr/>
+  <div class="box">
+    <img src="https://cn.bing.com/th?id=OHR.qixi_ZH-CN3534017617_1920x1080.jpg&rf=LaDigue_1920x1080.jpg&pid=hp);">
+  </div> -->
+  <hr>
+  <h3>solid border</h3>
+  <div class="border1 border">outline</div>
+  <div class="border2 border">:after</div>
+  <div class="border3 border">box-shadow</div>
+  <div class="border4 border">border-image</div>
+  <h3>color border</h3>
+  <div class="border color1">border-outline</div>
+  <div class="border color2">border-shadow</div>
+  <div class="border color3">background-clip&background-image</div>
+  <div class="other-box"></div>
+  <hr/>
+  <div class="box1"></div>
+</body>
+</html>

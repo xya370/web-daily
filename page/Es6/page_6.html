@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+	</body>
+  <script>
+    {
+      var html = '<div :class="c" class="demo" v‐if="isShow"><span v‐for="item in sz">{{item}}</span></div>';
+      
+      // vue parse dom
+      const defaultTagRE = /\{\{((?:.|\n)+?)\}\}/g;
+      var forAliasRE = /(.*?)\s+(?:in|of)\s+(.*)/;
+      var singleAttrIdentifier = /([^\s"'<>/=]+)/;
+      var singleAttrAssign = /(?:=)/;
+      var singleAttrValues = [
+        // attr value double quotes
+        /"([^"]*)"+/.source,
+        // attr value, single quotes
+        /'([^']*)'+/.source,
+        // attr value, no quotes
+        /([^\s"'=<>`]+)/.source
+      ];
+      var attribute = new RegExp(
+        '^\\s*' + singleAttrIdentifier.source +
+        '(?:\\s*(' + singleAttrAssign.source + ')' +
+        '\\s*(?:' + singleAttrValues.join('|') + '))?'
+      );
+      // could use https://www.w3.org/TR/1999/REC-xml-names-19990114/#NT-QName
+      // but for Vue templates we can enforce a simple charset
+      var ncname = '[a-zA-Z_][\\w\\-\\.]*';
+      var qnameCapture = '((?:' + ncname + '\\:)?' + ncname + ')';
+      var startTagOpen = new RegExp('^<' + qnameCapture);
+      var startTagClose = /^\s*(\/?)>/;
+      var endTag = new RegExp('^<\\/' + qnameCapture + '[^>]*>');
+      var doctype = /^<!DOCTYPE [^>]+>/i;
+      var comment = /^<!--/;
+      var conditionalComment = /^<!\[/;
+      
+      let index = 0;
+      const stack = []; //保存解析好的标签头
+      let currentParent,root; //currentParent 存放当前节点父标签节点， root指向根标签节点
+      // 循环匹配时，将已匹配的部分去除
+      function advance (n){
+       index += n;
+       html = html.substring(n);
+       console.log(index, html)
+      }
+      
+      // attrs转化为map
+      function makeAttrsMap(attrs) {
+       const map = {}
+       for(let i =0;i < attrs.length;i++) {
+        attrs[i].name = encodeURI(attrs[i].name).indexOf('%E2%80%90') > 0 ? encodeURI(attrs[i].name).replace(/%E2%80%90/g, '-'):attrs[i].name;
+        map[attrs[i].name] = attrs[i].value;
+       }
+       return map;
+      }
+      // advance(43)
+      // console.log(html);
+      
+      //1.parse html解析
+      function parseHTML() {
+        console.log('start');
+        while(html) {
+          let textEnd = html.indexOf('<');
+          if(textEnd === 0) {
+            if(html.match(endTag)) {
+            //     匹配标签结束处
+              const endTagMatch = html.match(endTag);
+              if(endTagMatch) {
+                advance(endTagMatch[0].length);
+                parseEndTag(endTagMatch[1]);
+                continue;
+              }
+            }
+            if(html.match(startTagOpen)) {
+              //     匹配标签开始处
+              const startTagMatch = parseStartTag();
+              const element = {
+                type: 1,
+                tag: startTagMatch.tagName,
+                lowerCasedTag: startTagMatch.tagName.toLowerCase(),
+                attrsList: startTagMatch.attrs,
+                attrsMap: makeAttrsMap(startTagMatch.attrs),
+                parent: currentParent,
+                children: []
+              }
+              processIf(element);
+              processFor(element);
+              optimize(element);
+              if(!root) {
+                root = element
+              }
+              if(currentParent) {
+                currentParent.children.push(element);
+              }
+              
+              stack.push(element);
+              currentParent = element;
+              continue;
+            }
+          } else {
+            //    匹配text文本
+            const text = html.substring(0,textEnd);
+            advance(textEnd);
+            let expression;
+            if(expression = parseText(text)) {
+              currentParent.children.push({
+                type: 2,
+                text,
+                expression,
+              })
+            } else {
+              currentParent.children.push({
+                type: 3,
+                text,
+              })
+            }
+            continue
+          }
+        }
+      }
+      
+      function parseStartTag() {
+        //获取到标签头部并存放在match中，attrs存放标签内属性
+        const start = html.match(startTagOpen); 
+        if(start) {
+          const match = {
+            tagName: start[1],
+            attrs: [],
+            start: index
+          }
+          advance(start[0].length);
+        
+          //   使用startTagClose 和attribute 两个正则解析标签结束和标签内部属性
+          let end,attr;
+          while(!(end = html.match(startTagClose)) && (attr = html.match(attribute))) {
+            advance(attr[0].length);
+            match.attrs.push({
+              name: attr[1],
+              value: attr[3],
+            });
+          }
+          if (end) {
+            match.unarySlash = end[1];
+            advance(end[0].length);
+            match.end = index;
+            return match
+          }
+        }
+      }
+      
+      function parseEndTag(tagName) {
+        let pos ;
+        for(pos = stack.length-1; pos>= 0; pos--) {
+          if(stack[pos].lowerCasedTag === tagName.toLowerCase()) {
+            break;
+          }
+        }
+        if(pos >= 0 ){
+          stack.length = pos;
+          currentParent = stack[pos]
+        }
+      }
+      
+      function parseText(text) {
+        if(!defaultTagRE.test(text)) return;
+
+        const tokens = [];
+        let lastIndex = defaultTagRE.lastIndex = 0;
+        let match, index
+        while ((match = defaultTagRE.exec(text))) {
+          index = match.index
+
+          if (index > lastIndex) {
+           tokens.push(JSON.stringify(text.slice(lastIndex, index)))
+          }
+          const exp = match[1].trim();
+          tokens.push(`_s(${exp}`);
+          lastIndex = index + match[0].length
+        }
+        if(lastIndex < text.length) {
+          tokens.push(JSON.stringify(text.slice(lastIndex)));
+        }
+        console.log(tokens)
+        return tokens.join('+')
+      }
+      parseHTML();
+      console.log(root)
+      // optimize(root)
+      // console.log(root)
+      generate(root);
+      console.log(generate(root));
+ 
+    
+    // v-if 处理器
+    /**
+     *  getAndRemoveAttr 获取name对应值
+     * */
+    function getAndRemoveAttr(el, name) {
+      let val;
+      // 属性名特殊字符被转移
+      // console.log(encodeURIComponent(name),encodeURIComponent("v-if"))
+      if ((val = el.attrsMap[name]) != null) {
+        const list = el.attrsList;
+        for (let i = 0; i<list.length;i++) {
+          if(list[i].name === name) {
+            list.splice(i, 1);
+            break;
+          }
+        }
+      }
+      return val
+    }
+    function processIf(el) {
+      const exp = getAndRemoveAttr(el, 'v-if');
+      if(exp) {
+        el.if = exp;
+        if(!el.ifConditions) {
+          el.ifConditions = [];
+        }
+        el.ifConditions.push({
+          exp: exp,
+          block: el,
+        })
+      }
+    }
+    function processFor(el) {
+      let exp;
+      if(exp = getAndRemoveAttr(el, 'v-for')) {
+        const inMatch = exp.match(forAliasRE);
+        el.for = inMatch[2].trim();
+        el.alias = inMatch[1].trim();
+      }
+    }
+    
+    //2. optimize 流程,添加static 属性标记是否静态
+    function isStatic(node) {
+      if(node.type === 2) {
+        return false
+      }
+      if(node.type === 3) {
+        return false;
+      }
+      return (!node.if && !node.for);
+    }
+    
+    function markStatic(node) {
+      node.static = isStatic(node);
+      if(node.type === 1 ) {
+        for(let i = 0;i<node.children.length;i++ ) {
+          const child = node.children[i];
+          markStatic(child);
+          if(!child.static) {
+            node.static = false;
+          }
+        }
+      }
+    }
+    
+    function markStaticRoots(node) {
+      if(node.type === 1) {
+        if(node.static 
+          && node.children.length 
+          && !(
+            node.children.length === 1 
+            && node.children[0].type === 3
+           )
+          )
+        {
+          node.staticRoot = true;
+          return ;
+        } else {
+          node.staticRoot = false;
+        }
+      }
+    }
+    function optimize(rootAst) {
+      markStatic(rootAst);
+      markStaticRoots(rootAst);
+    }
+    
+    // 3. generate 将AST转化为render function 字符串
+    // 处理v-if条件
+    function genIf(el) {
+      el.ifProcessed = true;
+      if(!el.ifConditions.length) {
+        return '_e()';
+      }
+      return `(${el.ifConditions[0].exp})?${genElement(el.ifConditions[0].block)}:_e()`;
+    }
+    
+    // 处理v-for
+    function genFor(el) {
+      el.forProcessed = true;
+      const exp = el.for;
+      const ailas = el.ailas;
+      const iterator1 = el.iterator1 ? `,${el.iterator1}` : '';
+      const iterator2 = el.iterator2 ? `,${el.iterator2}`: '';
+      return `_1((${exp})),
+        function(${ailas}${iterator1}${iterator2}){
+          return ${genElement(el)}
+        }
+      `
+    }
+    
+    // 处理text文本
+    function genText(el){
+      return `_v(${el.expression})`;
+    }
+    
+    // genElement;
+    function genNode(el) {
+      if(el.type === 1) {
+        return genElement(el);
+      } else {
+        return genText(el);
+      }
+    }
+    
+    function genChildren(el) {
+      const children = el.children;
+      if(children && children.length > 0) {
+        return `${children.map(genNode).join(',')}`;
+      }
+    }
+    
+    function genElement(el) {
+      if(el.if && !el.ifProcessed) {
+        return genIf(el)
+      } else if (el.for && !el.forProcessed) {
+        return genFor(el);
+      } else {
+        const children = genChildren(el);
+        let code;
+        code = `_c(${el.tag},{staticClass: ${el.attrsMap && el.attrsMap[':class']},{class: ${el.attrsMap && el.attrsMap['class']},}${children ? ',${children}' : ''}
+             })`
+        return code;
+      }
+    }
+    function generate (rootAst) { 
+      const code = rootAst ? genElement(rootAst) : '_c("div")';
+      return {
+        render: `with(this){return ${code}}`
+      }
+    }
+    
+    // 4.patch, 使用diff算法,对比差异,对比所获得的差异更新到视图上
+    // diff算法,通过同层树节点进行比较,而不是对树进行逐层搜索遍历的方式
+    
+    // api 
+    function createElm(vnode, parentElm, refElm) {
+      if(vnode.tag) {
+        insert(parentElm, nodeOps.createElement(vnode.tag), refElm);
+      } else {
+        insert(parentElm, nodeOps.createElement(vnode.text), refElm);
+      }
+    }
+    
+    function insert(parent, elm, ref) {
+      if(parent) {
+        if(ref) {
+          if(ref.parentNode == parent) {
+            nodeOps.insertBefore(parent, elm, ref);
+          }
+        } else {
+          nodeOps.appendChild(parent, elm);
+        }
+      }
+    }
+    
+    function addVnodes(parentElm, refElm, vnodes, startIdx, endIdx) {
+      for(; startIdx <= endIdx ; ++startIdx) {
+        createElm(vnodes[startIdx], parentElm, refElm);
+      }
+    }
+    
+    function removeNode(el) {
+      const parent = nodeOps.parentNode(el);
+      if(parent) {
+        nodeOps.removeChild(parent, el);
+      }
+    }
+    
+    function removeNodes(parentElm, vnodes, startIdx, endIdx) {
+      for(; startIdx <= endIdx; ++startIdx) {
+        const ch = vnodes[startIdx];
+        if (ch) {
+          removeNode(ch);
+        }
+      }
+    }
+    /**
+     *  FunctionName (patch)
+     *  Params [oldVnode , vnode , parentElement]
+     * */
+    function patch(oldVnode, vnode, parentElement) {
+      // 如果没有oldVnode,相当于直接在parentElement下新增节点
+      if(!oldVnode) {
+        addVnodes(parentElement, null , vnode, 0 ,vnode.length-1);
+      } else if (!vnode) {
+        // 如果没有新的Vnode节点时,表示需要删除原有节点，将原有的老节点删除
+        removeVnodes(parentElement, oldVnode, 0 , oldVnode.length -1);
+      } else {
+        // 如果新旧节点相同,对新旧节点进行对比操作
+        if(sameVnode(oldVnode, vnode)) {
+          patchVnode(oldVnode, vnode);
+        } else {
+          // 如果节点不同,删除旧节点,新增新节点
+          removeVnodes(parentElement, oldVnode, 0, oldVnode.length-1);
+          addVnodes(parentElement, null, vnode, 0, vnode.length-1);
+        }
+      }
+    }
+    
+    /**
+     *  FunctionName (sameVnode) //判断新旧节点是否一致
+     *  Params [old, val]
+     * */
+    function sameVnode(old, val) {
+      return (
+        old.key === val.key &&
+        old.tag === val.tag && 
+        old.isComment === val.isComment && //是否为注释节点
+        (!!old.data) === (!!val.data) && 
+        sameInputTtype(old, val)
+      )
+    }
+    /**
+     *  FunctionName sameInputTtype //判断节点同为input时是否type相同
+     *  Params [old, val]
+     * */
+    function sameInputTtype(old, val) {
+      if(old.tag !== 'input') return true;
+      let i ;
+      const typeA = (i = old.data) && (i = old.attrs) && i.type;
+      const typeB = (i = val.data) && (i = val.attrs) && i.type;
+      return typeA === typeB;
+    }
+    
+    /**
+     *  FunctionName (patchVnode) //对新旧节点进行对比
+     *  Params [old, vnode]
+     * */
+    function patchVnode(old,vnode) {
+      if(old === vnode) {return;}
+      
+      // 如果新旧节点都是静态节点,且key相同,将旧节点的componentInstance传递给新节点
+      if(vnode.isStatic && old.isStatic && vnode.key === old.key) {
+        vnode.elm = old.elm;
+        vnode.componentInstance = old.componentInstance;
+        return ;
+      }
+      
+      const elm = vnode.elm = old.elm;
+      const oldCh = old.children;
+      const ch = vnode.children;
+      // 如果新节点是文本节点
+      if(vnode.text) {
+        nodeOps.setTextContent(elm, vnode.text);
+      } else {
+        // 如果新节点和旧节点的子节点均存在(ch,oldCh),但不相等时,更新节点
+        if (oldCh && ch && (oldCh !== ch)) {
+          updateChildren(elm, oldCh, ch);
+        } else if (ch) {
+          // 如果ch存在
+          // 且old是文本节点时,先清除原有的文本,批量插入节点
+          if(old.text) nodeOps.setTextContent(elm, '');
+          addVnodes(elm, null, ch, 0, ch.length-1);
+        } else if(oldCh) {
+          // 只有oldCh存在时,清除老节点
+          removeVnodes(elm, oldCh, 0, oldCf.length -1);
+        } else if (old.text) {
+          nodeOps.setTextContent(elm, '');
+        }
+      }
+    } 
+    
+    function updateChildren (parentElm, oldCh, newCh) {
+      // 分别定义新旧节点的开始和结束索引
+      let oldStartIdx = 0;
+      let newStartIdx = 0;
+      let oldEndIdx = oldCh.length - 1;
+      let oldStartVnode = oldCh[0];
+      let oldEndVnode = oldCh[oldEndIdx];
+      let newEndIdx = newCh.length - 1;
+      let newStartVnode = newCh[0];
+      let newEndVnode = newCh[newEndIdx];
+      let oldKeyToIdx, idxInOld, elmToMove, refElm;
+      
+      while (oldStartIdx <= oldEndIdx && newStartIdx <=newEndIdx) {
+        // 进行循环并分组进行对比,同时更行新旧节点的结束和开始的索引,索引逐渐向中间靠近
+        
+        if(!oldStartVnode) {
+          oldStartVnode = oldCh[++oldStartIdx];
+        } else if (!oldEndVnode) {
+          oldEndVnode = oldCh[--oldEndIdx];
+        } else if (sameVnode(oldStartVnode, newStartVnode)) {
+          // oldStartVnode 和 newStartVnode 进行匹配,直接调用patchVnode 进行对比;
+           // 同时开头索引分别向后挪
+          patchVnode(oldStartVnode, newStartVnode);
+          oldStartVnode = oldCh[++oldStartIdx];
+          newStartVnode = newCh[++newSatrtIdx];
+        } else if(sameVnode(oldEndVnode, newEndVnode)) {
+          // oldEndVnode 和 newEndVnode 进行匹配,直接调用patchVnode 进行对比;
+          // 同时开头索引分别向前挪
+          patchVnode(oldEndVnode, newEndVnode);
+          oldEndVnode = oldCh[--oldEndIdx];
+          newEndVnode = newCh[--newEndVnode];
+        } else if (sameVnode(oldStartVnode, newEndVnode)) {
+          // oldStartVnode, newEndVnode进行匹配，两个节点是同一个时,然后将oldStartVnode插入oldEndVnode的后面
+          patchVnode(oldStartVnode, newEndVnode);
+          nodeOps.insertBefore(parentElm, oldStartVnode.elm, nodeOps.nextSibling(oldEndVnode.elm));
+          oldStartVnode = oldCh[++oldStartIdx];
+          newEndVnode = newCh[--newEndIdx];
+        } else if (sameVnode(oldEndVnode, newStartVnode)) {
+          patchVnode(oldEndVnode, newStartVnode);
+          nodeOps.insertBefore(parentElm, oldEndVnode.elm, oldStartVnode.elm);
+          oldEndVnode = oldCh[--oldEndIdx];
+          newStartVnode = newCh[++newEndIdx];
+        } else {
+          let elmToMove = oldCh[idxInOld];
+          if (!oldKeyToIdx) oldKeyToIdx = createKeyToOldIdx(oldCh, oldStartIdx, oldEndIdx);
+          // 通过oldKeyToIdx 快速索取到相同节点所在索引,
+          idxInOld = newStartVnode.key ? oldKeyToIdx[newStartVnode.key] : null;
+          if(!idxInOld) {
+            // 如果节点不存在,则创建一个节点
+            createElm(newStartVnode, parentElm);
+            newStartVnode = newCh[++newStartIdx];
+          } else {
+            elmToMove = oldCh[idxInOld];
+            // 如果索引存在并符合sameVnode 
+            if(sameVnode(elmToMove, newStartVnode)) {
+              patchVnode(elmToMove, newStartVnode);
+              oldCh[idxInOld] = undefined;
+              nodeOps.insertBefore(parentElm, newStartVnode.elm, oldStartVnode.elm);
+              newStartVnode = newCh[++newStartIdx];
+            } else {
+              createElm(newStartVnode, parentElm);
+              newStartVnode = newCh[++newStartIdx];
+            }
+          }
+        }
+      }
+      
+      if(oldStartIdx > oldEndIdx) {
+        refElm = (newCh[newEndIdx + 1] ? newCh[newEndIdx + 1].elm : null);
+        addVnodes(parentElm, refElm, newCh, newStartIdx, newEndIdx);
+      } else if (newStartIdx > newEndIdx) {
+        removeVnodes(parentElm, oldCh, oldStartIdx, oldEndIdx);
+      }
+    }
+    
+    /**
+     *  FunctionName createToOldIdx 返回一个key和index对应的map表，以便快速的获取的对应节点
+     * */
+    function createKeyToOldIdx(children, beginIdx, endIdx) {
+      let i , key ;
+      const map = {};
+      for(i = beginIdx; i<= endIdx, i++) {
+        key = children[i].key
+        if(isDef(key)) map[key] = i;
+      }
+      return map
+    }
+   }
+  </script>
+</html>

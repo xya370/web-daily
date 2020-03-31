@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>varying_color</title>
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <script src="./gl.js"></script>
+</head>
+<style>
+  html, body {
+    width: 100%;
+    height: 100%;
+  }
+  canvas {
+    width: 50%;
+    height:　325px;
+  }
+</style>
+<body>
+  <canvas id="canvas"></canvas>
+</body>
+<script>
+  var gl = gl("canvas");
+
+  /**
+   * *
+   * 在顶点着色器中声明varying变量
+   */
+  var VSHADER_SCOURE = `
+    attribute vec4 a_Position;
+    attribute vec4 a_Color;
+    varying vec4 v_Color;
+    void main(){
+      gl_Position = a_Position;
+      gl_PointSize = 5.0;
+      v_Color = a_Color;
+    }
+  `
+/**
+ * 声明浮点数精度
+ * 使用varying变量
+ */
+  var  FSHANDER_SCOURE = `
+    precision mediump float;
+    varying vec4 v_Color;
+    void main(){
+      gl_FragColor = v_Color;
+    }
+  `
+  var program = initSource(gl, VSHADER_SCOURE, FSHANDER_SCOURE);
+  var verticesSizes = new Float32Array([
+    0.0,0.5,1.0,0.0,0.0,//第一个点
+    -0.5,-0.5,0.0,1.0,0.0,//第二个点
+    0.5,-0.5,0.0,0.0,1.0
+  ])
+
+  // 缓冲区创建&&绑定
+  var verticesBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, verticesBuffer);
+  gl.bufferData(gl.ARRAY_BUFFER, verticesSizes, gl.STATIC_DRAW);
+
+  var FSIZE = verticesSizes.BYTES_PER_ELEMENT
+  var a_Position = gl.getAttribLocation(program, "a_Position");
+  gl.vertexAttribPointer(a_Position, 2, gl.FLOAT,false, FSIZE*5, 0)
+  gl.enableVertexAttribArray(a_Position);
+
+  var a_Color = gl.getAttribLocation(program, "a_Color");
+  gl.vertexAttribPointer(a_Color, 3, gl.FLOAT, false,FSIZE*5, FSIZE*2);
+  gl.enableVertexAttribArray(a_Color);
+
+  gl.drawArrays(gl.TRIANGLES, 0, 3)
+</script>
+</html>

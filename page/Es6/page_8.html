@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>page_8</title>
+  <script type="text/javascript" src="../../js/lib/jquery-1.10.2.min.js"></script>
+  <script src="../../js/otherJS/sortColor.js"></script>
+</head>
+<style>
+  /* 背景图的混和 */
+  .box {
+    width: 350px;
+    height: 200px;
+    outline: 1px solid #0C1328;
+    margin: auto;
+    background: url(https://cn.bing.com/th?id=OHR.BarcolanaTrieste_ZH-CN5745744257_1920x1080.jpg&rf=LaDigue_1920x1080.jpg&pid=hp),
+     url(https://cn.bing.com/th?id=OHR.BubbleNebula_ZH-CN2787112807_1920x1080.jpg&rf=LaDigue_1920x1080.jpg&pid=hp) no-repeat;
+    background-blend-mode: screen;
+    background-blend-mode: multiply;
+    background-blend-mode: color-dodge;
+  }
+  .box2 {
+    width: 350px;
+    height: 200px;
+    outline: 1px solid #0C1328;
+    margin:10px  auto;
+    text-align: center;
+    font-size: 26px;
+    line-height: 6;
+    letter-spacing: 3px;
+    font-family: fantasy;
+    background: url(https://cn.bing.com/th?id=OHR.TinternAbbey_ZH-CN1922933358_1920x1080.jpg&rf=LaDigue_1920x1080.jpg&pid=hp) no-repeat;
+    background-size: contain;
+  }
+  
+  /* 元素混合 */
+</style>
+<body>
+  <div class="box"></div>
+  <div class="box2">
+    <span>FALL</span>
+  </div>
+  <div class="main"></div>
+</body>
+  <script>
+    var i = 0
+    var color = ['#a1d3f5', '#6cb8ea', '#66b6ee','#aedbf5', '#a1d3f5', '#6fbaee','#acd9f6', '#69b4ee', '#7dc0f2','#a4d8f8', '#7ebff0', '#6BB9EF','#71BBEF'];
+    var color = ['rgb(255,153,153)', 'rgb(246,162,144)', 'rgb(236,172,134)', 'rgb(227,181,125)', 'rgb(218,190,116)', 'rgb(209,199,107)', 'rgb(199,209,97)', 'rgb(190,218,88)', 'rgb(181,227,79)', 'rgb(172,236,70)', 'rgb(162,246,60)']
+    var result = sortColor(color)
+    var div = '', colorData = [];
+    for(; i < color.length ; i++) {
+      div += '<div style="width: 100px; height: 50px; background: '+result[i]+'">'+result[i]+'</div>'
+      var colori = result[i].match(/(?<=\()[^()]*(?=\))/g)[0].match(/[0-9]+/g)
+    }
+    $('.main').append(div);
+ </script>
+</html>

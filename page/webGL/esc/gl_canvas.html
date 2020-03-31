@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>gl_canvas</title>
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <script src="../../../js/lib/jquery-1.10.2.min.js"></script>
+  <!-- <script src="../gl.js"></script> -->
+</head>
+<style>
+  body,html {
+    width: 100%;
+    height: 100%;
+  }
+  canvas {
+    width: 50%;
+    height: 315px;
+  }
+</style>
+<body>
+  <canvas id="canvas"></canvas>
+</body>
+<script>
+  var canvas = document.getElementById("canvas");
+  var content = canvas.getContext("2d");
+  var cWid = $("canvas").width(),cHig = $("canvas").height();
+  // content.translate(cWid / 2, cHig / 2);
+  var imgDate, data = [];
+  var img = new Image();
+  img.src = "../../../img/3.png";
+  var rect = canvas.getBoundingClientRect();
+  console.log(cWid,cHig,rect)
+  img.onload = function(){
+    var imWid = img.width ,imHeight = img.height
+    content.drawImage(img, 0, 0,cWid, cHig)
+    imgDate = content.getImageData(0, 0, cWid, cHig)
+    var offsetX = imgDate.width / 2, offsetY = imgDate.height / 2;
+    console.log(offsetY, offsetX, imgDate, rect,imWid,imHeight)
+    for (var i = 0 ; i < imgDate.width; i+=2) {
+      for(var j = 0; j < imgDate.height; j++) {
+        var r = i * 4 + j * imgDate.width * 4;
+        if (imgDate.data[r+2]) {
+          data.push (
+            (i - offsetX) / offsetX,
+            -(j-offsetY) / offsetY,
+            Math.random(),
+            1.0,
+            /*(imgDate.data[r]),
+            (imgDate.data[r+1]),
+            (imgDate.data[r+2]),*/
+            (imgDate.data[r] / 255),
+            (imgDate.data[r+1] / 255),
+            (imgDate.data[r+2] /255)
+          )
+        }
+      }
+    }
+    // console.log(data)
+    content.clearRect(0, 0, cWid, cHig);
+    $("canvas").remove();
+    $("body").append('<canvas id="canvas"></canvas>')
+    drawGL(data)
+  }
+  function drawGL(data) {
+    var canvas = document.getElementById("canvas");
+    var gl = canvas.getContext("experimental-webgl");
+    gl.clearColor(0.0, 0.0, 0.0, 1.0)
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    var VASHADER_SCOURE = `
+      attribute vec4 a_Position;
+      attribute float a_PointSize;
+      attribute vec4 a_Color;
+      varying vec4 v_Color;
+      void main() {
+        gl_Position = a_Position;
+        gl_PointSize = a_PointSize;
+        v_Color = a_Color;
+      }
+    `
+    var FSHADER_SCOURE = `
+      precision mediump float;
+      varying vec4 v_Color;
+      void main() {
+        gl_FragColor = v_Color;
+      }
+    `
+    var program = initSource(gl, VASHADER_SCOURE, FSHADER_SCOURE);
+
+    var verticeSize = new Float32Array(data)
+
+
+    /**
+     * 缓冲区存入大量数据
+     */
+
+    // 创建缓冲区
+    var vertexSizeBuffer = gl.createBuffer()
+    // console.log(program, vertexSizeBuffer, verticeSize)
+    // 绑定缓冲区，数据写入缓冲区；
+    gl.bindBuffer(gl.ARRAY_BUFFER, vertexSizeBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, verticeSize, gl.STATIC_DRAW);
+
+    // 获取a_Position所占的字节数
+    var FSIZE = verticeSize.BYTES_PER_ELEMENT
+    // console.log(FSIZE);
+    var aPosition = gl.getAttribLocation(program, "a_Position");
+
+    //对位置进行分配
+    /**
+     * vertexAttribPointer (location, size, type, normliza, stride[指定相邻的顶点的字节数], offset[指定缓冲对象偏移量])
+     *
+     */
+    gl.vertexAttribPointer(aPosition, 3, gl.FLOAT,false, FSIZE*7,0);
+    //开启分配
+    gl.enableVertexAttribArray(aPosition);
+
+    var aPointSize = gl.getAttribLocation(program, "a_PointSize");
+    gl.vertexAttribPointer(aPointSize, 1, gl.FLOAT, false, FSIZE*7, FSIZE*3);
+    gl.enableVertexAttribArray(aPointSize)
+
+    var a_Color = gl.getAttribLocation(program, "a_Color");
+    gl.vertexAttribPointer(a_Color, 3, gl.FLOAT, false, FSIZE * 7, FSIZE * 4);
+    gl.enableVertexAttribArray(a_Color);
+    gl.drawArrays(gl.POINTS,0,data.length / 7);
+  }
+  function initSource(gl, vShader, fShader) {
+    var vertexShader = gl.createShader(gl.VERTEX_SHADER);
+    var fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
+    //引入着色器
+    gl.shaderSource(vertexShader, vShader);
+    gl.shaderSource(fragmentShader, fShader)
+    //编译
+    gl.compileShader(vertexShader);
+    gl.compileShader(fragmentShader);
+
+    //创建程序对象
+    var program = gl.createProgram();
+    //附着着色器
+    gl.attachShader(program, vertexShader);
+    gl.attachShader(program, fragmentShader);
+
+    // //链接程序
+    gl.linkProgram(program);
+    gl.useProgram(program);
+    return program;
+}
+</script>
+</html>

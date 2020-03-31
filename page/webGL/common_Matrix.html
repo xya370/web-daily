@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>common_Matrix</title>
+  <script src="./gl.js"></script>
+  <script src="../../js/lib/matrix.js"></script>
+</head>
+<style>
+  body, html{
+    width: 100%;
+    height: 100%;
+  }
+  canvas {
+    width: 50%;
+    height: 560px;
+  }
+</style>
+<body>
+  <canvas id="canvas"></canvas>
+</body>
+<script>
+  var gl = gl("canvas");
+  var vshader_soure = `
+    attribute vec4 a_Position;
+    uniform mat4 u_xformMatrix;
+    void main() {
+      gl_Position = u_xformMatrix * a_Position;
+    }
+  `
+  var fshader_soure = `
+    void main() {
+      gl_FragColor = vec4(1.0, 0.8,0.3,0.5);
+    }
+  `
+  var program = initSource(gl, vshader_soure, fshader_soure);
+  var matrix = new Matrix4();
+  // var angle = 0 // 旋转角度
+  // var Tx = 0.5, Ty = 0.3, Tz = 0; // 声明平移距离
+  /*matrix.setRotate(angle, 0, 0, 1) // 设置为旋转矩阵，x, y, z, 设置旋转轴
+  // matrix.translate(Tx, Ty, Tz) //设置为平移矩阵
+  var u_ModelMatrix = gl.getUniformLocation(program, "u_xformMatrix");
+  gl.uniformMatrix4fv(u_ModelMatrix, false, matrix.elements);*/
+  var data = [
+    0.0, 0.5,
+    -0.5, 0.5,
+    0.5, 0,
+  ]
+  initVertexBuffers(gl, program, data, 2);
+  // gl.drawArrays(gl.TRIANGLES, 0, 3)
+  //
+  var angle = 0;
+  var lastNow = Date.now();
+  var animate = function(){
+    var now = Date.now();
+    var esp = now - lastNow;
+    var nangle = angle + (15 * esp)/1000.0;
+    nangle %= 360;
+    draw(nangle)
+    // angle = angle + (15 * esp)/1000.0;
+    // angle %= 360;
+    // draw(angle);
+    requestAnimationFrame(animate);
+  }
+  function draw (angle) {
+    matrix.setRotate(angle, 1, 0, 1);
+    var u_ModelMatrix = gl.getUniformLocation(program, "u_xformMatrix");
+    gl.uniformMatrix4fv(u_ModelMatrix, false, matrix.elements);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.drawArrays(gl.TRIANGLES, 0, 3)
+  }
+  animate(0)
+</script>
+</html>

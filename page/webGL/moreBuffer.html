@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>缓存区存储多个数据</title>
+  <script src="./gl.js"></script>
+  <script src="../../js/lib/WebGLDebug.js"></script>
+</head>
+<style>
+  body, html {
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+  }
+  canvas {
+    width: 50%;
+    height: 315px;
+  }
+</style>
+<body>
+  <canvas id="canvas"></canvas>
+</body>
+<script>
+  var gl = gl("canvas");
+  var VASHADER_SCOURE = `
+    attribute vec4 a_Position;
+    attribute float a_PointSize;
+    void main() {
+      gl_Position = a_Position;
+      gl_PointSize = a_PointSize;
+    }
+  `
+  var FSHADER_SCOURE = `
+    void main() {
+      gl_FragColor = vec4(0.0,1.0,0.0,1.0);
+    }
+  `
+  var program = initSource(gl, VASHADER_SCOURE, FSHADER_SCOURE);
+
+  var verticeSize = new Float32Array([
+    0.0, 0.5, 50.0, // x, y ,size
+    0.5, 0.5, 20.0,
+    -0.5, 0.5, 30.0,
+  ])
+  // 创建缓冲区
+  var vertexSizeBuffer = gl.createBuffer()
+  console.log(program, vertexSizeBuffer, verticeSize)
+  // 数据写入缓冲区；
+  gl.bindBuffer(gl.ARRAY_BUFFER, vertexSizeBuffer);
+  gl.bufferData(gl.ARRAY_BUFFER, verticeSize, gl.STATIC_DRAW);
+  // 获取a_Position所占的字节数
+  var FSIZE = verticeSize.BYTES_PER_ELEMENT
+  console.log(FSIZE);
+  var aPosition = gl.getAttribLocation(program, "a_Position");
+  //对位置进行分配
+  gl.vertexAttribPointer(aPosition, 2, gl.FLOAT,false, FSIZE*3,0);
+  //开启分配
+  gl.enableVertexAttribArray(aPosition);
+  var aPointSize = gl.getAttribLocation(program, "a_PointSize");
+  gl.vertexAttribPointer(aPointSize, 1, gl.FLOAT, false, FSIZE*3, FSIZE*2);
+  gl.enableVertexAttribArray(aPointSize)
+
+  gl.drawArrays(gl.POINTS,0,3);
+</script>
+</html>

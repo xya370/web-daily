@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title></title>
+</head>
+<style>
+  canvas {
+    width: 100px;
+    height: 100px;
+  }
+</style>
+<body>
+  <canvas id = "canvas"></canvas>
+</body>
+<script>
+  //顶点着色器, 设置各顶点位置
+  // gl_position : 确定渲染位置
+  var VSHADER_SOURCE = `
+    attribute vec4 a_Position;
+    void main(){
+      gl_Position = a_Position;
+      gl_PointSize = 10.0;
+    }
+  `
+  //片元着色器, 设置颜色
+  // vec4 (r,g, b, a)
+  var FSHADER_SOURCE = `
+    void main(){
+      gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+    }
+  `
+  var gl = glDraw("canvas", VSHADER_SOURCE, FSHADER_SOURCE);
+  function glDraw(canvasId,vShader, fShader) {
+    var canvas = document.getElementById(canvasId);
+    var gl = canvas.getContext("experimental-webgl");
+    gl.clearColor(1.0, 1.0, 1.0, 1.0)
+    var program = initSource(gl, vShader, fShader);
+    //链接程序
+    gl.linkProgram(program);
+    gl.useProgram(program);
+    var n = initVertexBuffers(gl, program,  [-0.75, 0.5,
+            -0.5, 0.0,
+            -0.25, 0.5,]);
+    gl.drawArrays(gl.LINE_STRIP,0,3)
+    return gl;
+  }
+
+  /* 缓存区创建*/
+  function initVertexBuffers(gl,program,data) {
+    var vertices = new Float32Array(data);
+    var n = 4;
+    var vertexBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW)
+    var a_Position = gl.getAttribLocation(program, "a_Position");
+    gl.vertexAttribPointer(a_Position, 2, gl.FLOAT, false, 0,0);
+    gl.enableVertexAttribArray(a_Position);
+    return n ;
+  }
+
+  function initSource(gl, vShader, fShader) {
+    var vertexShader = gl.createShader(gl.VERTEX_SHADER);
+    var fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
+    //引入着色器
+    gl.shaderSource(vertexShader, vShader);
+    gl.shaderSource(fragmentShader, fShader)
+    //编译
+    gl.compileShader(vertexShader);
+    gl.compileShader(fragmentShader);
+
+    //创建程序对象
+    var program = gl.createProgram();
+    //附着着色器
+    gl.attachShader(program, vertexShader);
+    gl.attachShader(program, fragmentShader);
+
+    return program;
+  }
+</script>
+</html>

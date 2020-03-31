@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Rotate</title>
+  <script src="./gl.js"></script>
+</head>
+<body>
+  <canvas width="250px" height = "400px" id="canvas"></canvas>
+</body>
+<script>
+  var gl = gl("canvas");
+  var vshader_source = `
+    attribute vec4 a_Position;
+    uniform float u_sinB, u_cosB;
+    void main() {
+      gl_Position.x = (a_Position.x * u_cosB) - (a_Position.y * u_sinB);
+      gl_Position.y = (a_Position.x * u_sinB) + (a_Position.y * u_cosB) ;
+      gl_Position.z = a_Position.z;
+      gl_Position.w = 1.0;
+      gl_PointSize = 3.0;
+    }
+  `
+  var fshader_source = `
+    void main() {
+      gl_FragColor = vec4(1.0, 1.0, 0.0, 1.0);
+    }
+  `
+  var program = initSource(gl, vshader_source, fshader_source);
+  var data = [
+    0.0, 0.0,
+    0.5, 0.5,
+    0.0, 0.5,
+  ]
+  // translation()
+  // initVertexBuffers(gl, program, data, 2);
+  // gl.drawArrays(gl.TRIANGLES,0, 3)
+  var i = 0;
+  rotate(45,45);
+
+  function rotate(angle, step) {
+    var rotates = setInterval(function(){
+      angle = angle + step;
+      console.log(angle)
+      if (angle >= 360) {
+        clearInterval(rotates)
+      }
+      var radin = Math.PI * angle / 180,
+      sinB = Math.sin(radin),
+      cosB = Math.cos(radin);
+      var u_sinB = gl.getUniformLocation(program, "u_sinB"),
+        u_cosB = gl.getUniformLocation(program, "u_cosB");
+      gl.uniform1f(u_sinB, sinB);
+      gl.uniform1f(u_cosB, cosB);
+      initVertexBuffers(gl, program, data, 2);
+      gl.drawArrays(gl.TRIANGLES,0, 3)
+    },1000)
+  }
+
+  function translation(){
+    var Tx = -0.3, Ty = -0.3, Tz = 0.0;
+    var step = -0.1;
+    var u_Translation = gl.getUniformLocation(program, "u_Translation");
+    gl.uniform4f(u_Translation, Tx, Ty, Tz, 0.0);
+  }
+</script>
+</html>

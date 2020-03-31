@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>React_Rotate</title>
+  <script src="./gl.js"></script>
+</head>
+<body>
+  <canvas width = "315px" height ="400px" id="rotateCanvas"></canvas>
+</body>
+<script>
+  /* 矩阵设置图形的改变*/
+
+  var gl = gl("rotateCanvas");
+  // 声明一个矩阵的uniform变量
+  var vshader_soure = `
+    attribute vec4 a_Position;
+    uniform mat4 u_xformMatrix;
+    void main() {
+      gl_Position = u_xformMatrix * a_Position;
+    }
+  `
+  var fshader_soure = `
+    void main() {
+      gl_FragColor = vec4(1.0, 0.8,0.3,0.5);
+    }
+  `
+  var program = initSource(gl, vshader_soure, fshader_soure);
+  var data = [
+    0.0, 0.5,
+    -0.5, 0.5,
+    0.5, 0,
+  ]
+  initVertexBuffers(gl, program, data, 2);
+  var angle = 30,
+    radin = Math.PI * angle / 180;
+    cosB = Math.cos(radin),
+    sinB = Math.sin(radin);
+  /**
+   * -   - -                 -   -    -
+   * | x | |  a,  b,  c,  d  |   | x1 |
+   * | y |=|  a0, b0, c0, d0 | * | y1 |
+   * | z | |  a1, b1, c1, d1 |   | z1 |
+   * | 1 | |  a2, b2, c2, d2 |   | 1  |
+   * -   - -                 -   -    -
+   * **/
+   // 一个没有改变的矩阵
+  var commonMatrix = [
+    1, 0, 0.0, 0.0,
+    0, 1, 0.0, 0.0,
+    0.0, 0.0, 1, 0.0,
+    0.0, 0.0, 0.0, 1.0,
+  ]
+  // 平移
+  var tranMatrix = [
+    1, 0, 0, 0,
+    0, 1, 0, 0,
+    0, 0, 1, 0,
+    0.5, -0.5, 0.0, 1
+  ]
+  // 缩放
+  var sMatrix = [
+    0.2, 0, 0, 0,
+    0, 0.3, 0, 0,
+    0, 0, 0.4, 0,
+    0, 0, 0, 0.5
+  ]
+  var angle = 30, radin = Math.PI * angle / 180, cos = Math.cos(radin), sin = Math.sin(radin);
+  // 旋转矩阵
+  var rotateMatrix = [
+    cos, -sin, 0.0 ,0.0,
+    -sin, cos, 0.0, 0.0,
+    0, 0,  1.0, 0.0,  gl.uniformMatrix4fv(u_xformMatrix, false, uXformMatrix);
+    0, 0,  0.0, 1.0,
+  ]
+  // var uXformMatrix = new Float32Array(commonMatrix)
+  // var uXformMatrix = new Float32Array(tranMatrix)
+  // var uXformMatrix = new Float32Array(sMatrix)
+  var uXformMatrix = new Float32Array(rotateMatrix)
+  var u_xformMatrix = gl.getUniformLocation(program, "u_xformMatrix");
+  gl.uniformMatrix4fv(u_xformMatrix, false, uXformMatrix);
+  gl.drawArrays(gl.TRIANGLES, 0, 3)
+
+</script>
+</html>

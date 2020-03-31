@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>clickDraw</title>
+  <script src = "./gl.js"></script>
+</head>
+<body>
+  <canvas id="canvas" width="200px" height = "200px"></canvas>
+</body>
+<script>
+  var VSHADER_SOURCE = `
+    attribute vec4 a_Position;
+    void main(){
+      gl_Position = a_Position;
+      gl_PointSize = 3.0;
+    }
+  `
+  //片元着色器, 设置颜色
+  // vec4 (r,g, b, a)
+/* var FSHADER_SOURCE = `
+    void main(){
+      gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+    }
+  ` */
+  
+  var FSHADER_SOURCE = `
+    precision mediump float; //指定变量范围和精度
+    uniform vec4 u_FragColor;
+    void main() {
+      gl_FragColor = u_FragColor;
+    }
+  `
+  
+  var gl = gl('canvas');
+  var program = initSource(gl, VSHADER_SOURCE, FSHADER_SOURCE);
+  var u_FragColor = gl.getUniformLocation(program, "u_FragColor");
+
+  var points = [];
+  var canvas = document.getElementById("canvas");
+  var color = [1.0, 0.0, 0.0, 1.0];
+  canvas.onmousedown = function(e){
+    var x = e.clientX, y = e.clientY;
+    var reat = {
+      width: e.target.width,
+      height: e.target.height,
+      top: e.target.offsetTop,
+      left: e.target.offsetLeft
+    }
+    x = ((x-reat.left) - reat.height / 2) / (reat.height/2);
+    y = (reat.width / 2 - (y-reat.top)) / (reat.width / 2);
+    points.push([x,y]);
+    // if (x >= 0.0 && y >= 0.0) {
+    //   color = [1.0,1.0,0.0,1.0];
+    // } else if(x < 0.0 && y < 0.0) {
+    //   color = [1.0,0.8,0.6,1.0]
+    // } else {
+    //   color = [1.0,0.5,1.0,1.0]
+    // }
+    for(var i = 0; i < points.length; i++) {
+      var point = points[i]
+      var n = initVertexBuffers(gl, program, point,2);
+      gl.uniform4f(u_FragColor,color[0],color[1],color[2],color[3])
+      gl.drawArrays(gl.POINTS,0,1)
+    }
+  }
+</script>
+</html>

@@ -1,3 +1,6 @@
+import jquery from "../lib/jquery-1.10.2.min.js";
+import Module from "../component/Module";
+import commonData from "../commonData";
 define(['jquery','Module',"commonData"],function($,Module,commonData){
 	function ajax(option){
 		var url = option.url
@@ -155,7 +158,7 @@ define(['jquery','Module',"commonData"],function($,Module,commonData){
  		obj:"hallflowC",
  		color:['#64b4f1','#6cce7f','#f3c277','#e74343'],
  		backgroundBar:true,
-//			 		percent:true, 
+//			 		percent:true,
  		data:[obj1,obj2,obj3,obj4],
  		addClick:function(x){
  			var div='<div id="sanjiao"></div>'
@@ -163,7 +166,7 @@ define(['jquery','Module',"commonData"],function($,Module,commonData){
 	 		$("#hallflowC").append(div)
  			$("#hallflowC #sanjiao").css({
  				left:(x-10)+'px'
- 			})	
+ 			})
  		}
 	})
 	new Module({

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>imgLazy</title>
+  <script src="https://code.jquery.com/jquery-3.0.0.min.js"></script>
+  <script src="../js/component/imgLazy.js"></script>
+</head>
+  <style>
+    /* body {
+      display: inline-flex;
+    } */
+    .content {
+      width: 300px;
+      height: 400px;
+      overflow: auto;
+      border: 1px solid ;
+    }
+    img {
+      width: 100%;
+    }
+    #box2 {
+      width: 90%;
+      height: 700px;
+      border: 1px solid;
+      overflow: auto;
+      display: inline-flex;
+    }
+  </style>
+<body>
+ <div class="content" id="box">
+    <img src="../img/defaultImg.png" alt=""  imgs = "https://cn.bing.com/th?id=OHR.RamsauWimbachklamm_ZH-CN1602837695_480x800.jpg&rf=LaDigue_1920x1080.jpg&pid=hp">
+    <img src="../img/defaultImg.png" alt=""  imgs = "https://cn.bing.com/th?id=OHR.Castelbouc_ZH-CN1475157551_480x800.jpg&rf=LaDigue_1920x1080.jpg&pid=hp">
+    <img src="../img/defaultImg.png" alt=""  imgs = "https://cn.bing.com/th?id=OHR.Slackers_ZH-CN1408656264_480x800.jpg&rf=LaDigue_1920x1080.jpg&pid=hp">
+    <img src="../img/defaultImg.png" alt=""  imgs = "https://cn.bing.com/th?id=OHR.AsburyParkNJ_ZH-CN1353073841_480x800.jpg&rf=LaDigue_1920x1080.jpg&pid=hp">
+    <img src="../img/defaultImg.png" alt=""  imgs = "https://cn.bing.com/th?id=OHR.HardeeCoFair_ZH-CN8647295545_480x800.jpg&rf=LaDigue_1920x1080.jpg&pid=hp">
+    <img src="../img/defaultImg.png" alt=""  imgs = "https://cn.bing.com/th?id=OHR.CorsiniGardens_ZH-CN8547012221_480x800.jpg&rf=LaDigue_1920x1080.jpg&pid=hp">
+  </div>
+  <div id="box2">
+    <img src="../img/defaultImg.png" alt=""  imgs = "https://cn.bing.com/th?id=OHR.RamsauWimbachklamm_ZH-CN1602837695_1920x1080.jpg&rf=LaDigue_1920x1080.jpg&pid=hp">
+    <img src="../img/defaultImg.png" alt=""  imgs = "https://cn.bing.com/th?id=OHR.Castelbouc_ZH-CN1475157551_1920x1080.jpg&rf=LaDigue_1920x1080.jpg&pid=hp">
+    <img src="../img/defaultImg.png" alt=""  imgs = "https://cn.bing.com/th?id=OHR.Slackers_ZH-CN1408656264_1920x1080.jpg&rf=LaDigue_1920x1080.jpg&pid=hp">
+    <img src="../img/defaultImg.png" alt=""  imgs = "https://cn.bing.com/th?id=OHR.AsburyParkNJ_ZH-CN1353073841_1920x1080.jpg&rf=LaDigue_1920x1080.jpg&pid=hp">
+    <img src="../img/defaultImg.png" alt=""  imgs = "https://cn.bing.com/th?id=OHR.HardeeCoFair_ZH-CN8647295545_1920x1080.jpg&rf=LaDigue_1920x1080.jpg&pid=hp">
+    <img src="../img/defaultImg.png" alt=""  imgs = "https://cn.bing.com/th?id=OHR.CorsiniGardens_ZH-CN8547012221_1920x1080.jpg&rf=LaDigue_1920x1080.jpg&pid=hp">
+  </div>
+  <img src="../img/defaultImg.png" alt=""  imgs = "https://cn.bing.com/th?id=OHR.RamsauWimbachklamm_ZH-CN1602837695_1920x1080.jpg&rf=LaDigue_1920x1080.jpg&pid=hp">
+  <img src="../img/defaultImg.png" alt=""  imgs = "https://cn.bing.com/th?id=OHR.Castelbouc_ZH-CN1475157551_1920x1080.jpg&rf=LaDigue_1920x1080.jpg&pid=hp">
+  <img src="../img/defaultImg.png" alt=""  imgs = "https://cn.bing.com/th?id=OHR.Slackers_ZH-CN1408656264_1920x1080.jpg&rf=LaDigue_1920x1080.jpg&pid=hp">
+  <img src="../img/defaultImg.png" alt=""  imgs = "https://cn.bing.com/th?id=OHR.AsburyParkNJ_ZH-CN1353073841_1920x1080.jpg&rf=LaDigue_1920x1080.jpg&pid=hp">
+  <img src="../img/defaultImg.png" alt=""  imgs = "https://cn.bing.com/th?id=OHR.HardeeCoFair_ZH-CN8647295545_1920x1080.jpg&rf=LaDigue_1920x1080.jpg&pid=hp">
+  <img src="../img/defaultImg.png" alt=""  imgs = "https://cn.bing.com/th?id=OHR.CorsiniGardens_ZH-CN8547012221_1920x1080.jpg&rf=LaDigue_1920x1080.jpg&pid=hp">
+</body>
+<script> 
+  var lazy = new imgLazy('box');
+  lazy.scroll();
+  // var lazy_1 = new imgLazy('box2');
+  // lazy_1.scroll();
+  // var nlaz = new imgLazy();
+  // nlaz.scroll()
+</script>
+</html>

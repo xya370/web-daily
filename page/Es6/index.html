@@ -81,27 +81,29 @@
          //console.log('endWidth',str.includes('!'))
        }
     })()
-    var twoSum = function(nums, target) {
-      for(var i =0 ;i<nums.length; i++) {
-        var j = target-nums[i]
-        var ort = nums.indexOf(j)
-        if(ort>= 0 && ort!=i ){
+    {
+      var twoSum = function(nums, target) {
+        for(var i =0 ;i<nums.length; i++) {
+          var j = target-nums[i]
+          var ort = nums.indexOf(j)
+          if(ort>= 0 && ort!=i ){
             return [i,ort]
+          }
         }
       }
-    };
-    var nums = [-1, 0, 1, 2, -1, -4]
-    var threeSum = function(x) {
-      var ar = String(x).split('')
-       var rese = ar.reverse()
-       //console.log(rese)
-       var news =""
-       rese.map((item)=>{
-          return news +=item
-       })
-       //console.log(news)
-        return news == x ? true: false
-    };
+      var nums = [-1, 0, 1, 2, -1, -4]
+      var threeSum = function(x) {
+        var ar = String(x).split('')
+         var rese = ar.reverse()
+         //console.log(rese)
+         var news =""
+         rese.map((item)=>{
+            return news +=item
+         })
+         //console.log(news)
+          return news == x ? true: false
+      };
+    }
     {
       var firstUniqChar = function(s) {
         let ns = [...s],indexs=[]

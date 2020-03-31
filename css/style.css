@@ -610,3 +610,6 @@ html{
 .se-top-left{left:10%;top:5%;}
 .se-top-right{right:10%;top:5%;}
 .se-bottom-left{bottom:5%;left:10%;}.se-bottom-right{bottom:5%;right:10%;}
+.box-shadow {
+  box-shadow:  6px 12px rgba(0,0,0,.18);
+}

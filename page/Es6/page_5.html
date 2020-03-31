@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>page_5</title>    
+    <script src="https://code.jquery.com/jquery-3.0.0.min.js"></script>
+	</head>
+	<body>
+    <input type="text" id="input">
+    <p></p>
+	</body>
+  <script>
+    // {
+    //     function add(x,y) {
+    //       this.x = x;
+    //       this.y = y;
+    //     }
+    //     add.prototype.sum = function(){
+    //       return this.x + this.y;
+    //     }
+    //     let y = new add(1,5);
+    //     console.log(y.sum())
+    // }
+    // {
+    //   class add {
+    //     constructor(x, y) {
+    //        this.x = x;
+    //        this.y = y;
+    //     }
+    //     sum() {
+    //       return this.x+ this.y
+    //     }
+    //   }
+    //   let n = new add(1,4);
+    //   console.log(n.sum())
+    // }
+    // {
+    //   function uploader (val) {
+    //     console.log(val)
+    //      alert('我又更新了')
+    //   }
+    //   function defined (obj, key, val) {
+    //     Object.defineProperty(obj, key, {
+    //       enumerable: true,
+    //       configurable: true,
+    //       get: function reactiveGetter() {
+    //         return val
+    //       },
+    //       set: function reactiveSetter(newVal) {
+    //         if(newVal === val )return;
+    //         uploader(newVal)
+    //       },
+    //     })
+    //   }
+    //   function obser(value) {
+    //     if(!value || typeof value !== 'object') {
+    //       return 
+    //     }
+    //     Object.keys(value).forEach((item)=>{
+    //       defined(value, item, value[item])
+    //     })
+    //   }
+    //   class test {
+    //     constructor(option) {
+    //         this._data = option.data;
+    //         obser(this._data);
+    //     }
+    //   }
+    //   let o = new test ({
+    //     data: {
+    //       test: '这是一个测试'
+    //     }
+    //   })
+    //   o._data.test ="No"
+    // }
+    // {
+    //   // Object.defineProperty
+    //   function setDat(val) {
+    //     $('p').text(val);
+    //   }
+    //   function obser(obj,key,val) {
+    //     Object.defineProperty(obj,key,{
+    //       enumerable : true,
+    //       configurable: true,
+    //       get: function reactiveGetter() {
+    //         return val;
+    //       },
+    //       set: function reactiveSetter(newVal) {
+    //         if(newVal === val ) return ;
+    //         setDat(newVal);
+    //       }
+    //     })
+    //   }
+    //   function setObe(value) {
+    //     if(!value || typeof value !== 'object') {
+    //       return 
+    //     }
+    //     Object.keys(value).forEach((item)=>{
+    //         obser(value, item, value[item])
+    //     })
+    //   }
+    //   class input {
+    //     constructor(option) {
+    //         this.data = option.data;
+    //         setObe(this.data);
+    //     }
+    //   }
+    //   let s = new input({
+    //     data: {
+    //       text: $('#input').val()
+    //     }
+    //   })
+    //   $('#input').on('input',function(){
+    //     s.data.text = $('#input').val()
+    //   })
+    // }
+    {
+      // vue 依赖收集机制
+      // dep  主要用以存放watcher观察者对象
+      class Dep {
+        constructor() {
+          this.subs = []; //存放watcher对象的数组
+        }
+        addSub(sub) {
+          this.subs.push(sub); //  添加一个新的watcher对象
+        }
+        notify() { 
+          
+          // 用以通知watcher对象进行更新操作
+          this.subs.forEach(sub => {
+            sub.upload();
+          })
+        }
+      }
+      
+      class watcher {
+        constructor() {
+            Dep.target = this;
+        }
+        upload() {
+          alert('原来是我要更新啊')
+        }
+      }
+      
+      Dep.target = null;
+      
+      function define (obj,key,val) {
+        const dep  = new Dep();
+        Object.defineProperty(obj, key, {
+          enumerable: true, //属性可被枚举
+          configurable: true, //属性可被修改或删除
+          get: function reactiveGetter() {
+            dep.addSub(Dep.target)  //get 用来收集watcher对象
+            return val;
+          },
+          set: function reactiveSetter(newVal) {
+            if(newVal === val ) return ;
+            dep.notify(newVal); //set 用来提醒并更新视图
+          }
+        })
+      }
+      function obser(value) {
+        if(!value || typeof value !== 'object') return ;
+        Object.keys(value).forEach(key => {
+          define(value , key , value[key]);
+        })
+      }
+      class Ntm {
+        constructor(option) {
+           this._data = option.data;
+           obser(this._data)
+           new watcher()
+           console.log( 'render,'+this._data.test)  //假装render 初始调用
+        }
+      }
+      let o = new Ntm ({
+        data: {
+          test: '这是一个测试'
+        }
+      })
+      o._data.test ="No"
+    }
+    
+  </script>
+</html>

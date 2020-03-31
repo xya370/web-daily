@@ -1,3 +1,4 @@
+import jquery from "./lib/jquery-1.10.2.min.js";
 define(['jquery'],function($){
     var setKey=function(key){
        var keys={

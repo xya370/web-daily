@@ -294,6 +294,9 @@ define(['ec','jquery','require'],function(ec,$,require){
 				}
 			}
 			var charts = ec.init(document.getElementById(self.option.obj+'_probarBox'));
+        if(option.backgroundBar) {
+          console.log(opt)
+        }
 	  		charts.setOption(opt);
 	  		charts.on('click',function(params){
 	  			var x = params.event.target.shape.x

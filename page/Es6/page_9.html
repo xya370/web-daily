@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title></title>
+  <script type="text/javascript" src="../../js/lib/jquery-1.10.2.min.js"></script>
+</head>
+<style>
+  .imgBox {
+    width: 100%;
+    height:450px;
+    outline: 1px solid ;
+    margin-top: 10px;
+  }
+</style>
+<body>
+  <input type="file" id = "file">
+  <div class="imgBox"></div>
+</body>
+ <script src="../../js/otherJS/getColor.js"></script>
+ <!-- <script src = "../../js/otherJS/themColor.js"></script> -->
+ <script>
+   $(function(){
+     $('#file').on('change', function(){
+       if(this.files[0]) {
+         readyImg2(this.files[0]) 
+       }
+     })
+     function readyImg2(file) {
+       var img = new Image();
+       var ready = new FileReader();
+       ready.onload = function(e) {
+         img.src = this.result;
+         img.onload = function(){
+           getColor(img, function(colors){
+             $('html').css('background','rgb('+colors[0]+')')
+           }); 
+         }
+       }
+       ready.readAsDataURL(file)
+     }
+   })
+ </script>
+</html>
+ 

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+  <title>html5_1</title>
+  <script src="./mobile.js"></script>
+  <!-- <script src="https://cdn.bootcss.com/jquery/3.4.1/core.js"></script> -->
+</head>
+<style>
+  html,body {
+    margin: 0;
+    padding: 0;
+  }
+  body {
+    width: 100%;
+    height: 100%;
+    background:#9aaa9a;
+  }
+  div {
+    box-sizing: border-box;
+  }
+  .main {
+    width: 100%;
+    /*height: 33.333333333333336rem;*/
+    height: 100%;
+    display: flex;
+    flex-wrap: wrap; /* 换行 */
+    /* 排列方向 */
+    /*flex-direction: column;*/
+    background: #fff;
+    /* 主轴与换行的缩写*/
+    /*flex-flow: column wrap;*/
+    overflow-y: scroll;
+  }
+  .main_item {
+    width: 16.666666666666668rem;
+    height: 2.5rem;
+    background: rgb(221, 123, 123);
+    margin: auto;
+    margin-bottom: 10px;
+  }
+</style>
+<body>
+  <!-- <canvas id="canvas" width="200" height="200"></canvas> -->
+  <div class="main" id="mobile">
+    <div class="main_item"></div>
+    <div class="main_item"></div>
+    <div class="main_item"></div>
+    <div class="main_item"></div>
+    <div class="main_item"></div>
+    <div class="main_item"></div>
+    <div class="main_item"></div>
+    <div class="main_item"></div>
+    <div class="main_item"></div>
+    <div class="main_item"></div>
+    <div class="main_item"></div>
+    <div class="main_item"></div>
+    <div class="main_item"></div>
+    <div class="main_item"></div>
+    <div class="main_item"></div>
+    <div class="main_item"></div>
+  </div>
+</body>
+<script>
+  function draw() {
+    var canvas = document.getElementById('canvas');
+    var content = canvas.getContext('2d');
+    content.clearRect(0,0,200,200);
+    content.beginPath();
+    content.moveTo(0, 50);
+    content.bezierCurveTo();
+    // content.stro
+    // path2d,缓存或记录绘画记录，以便快速回顾路径， 可以使用svg初始化路径
+    // 状态，变形控制
+    // save() restore()
+    // translate(x,y) scale(), rotate(),transform()
+    // 动画步骤
+    // 清空canvas
+    // 保存canvas状态
+    // 控制动画图形
+    // 恢复状态
+  }
+  // var data = [1,2,3,4,5,6,78]
+  // var div = '';
+  // data.forEach(function(item){
+  //   div += '<div class="main_item">'+item+'</div>'
+  // })
+  // $('#mobile').empty().append(div);
+  var dom = document.getElementById('mobile')
+  mobileEvent('#mobile').leftMove(function(){
+    console.log("left to right")
+  })
+  mobileEvent('#mobile').rightMove(function(){
+    console.log("right to left")
+  })
+  mobileEvent('#mobile').topMove(function(){
+    location.reload();
+    console.log("top")
+  })
+</script>
+</html>

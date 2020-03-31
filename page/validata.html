@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>input验证</title>
+  <script src="https://code.jquery.com/jquery-3.0.0.min.js"></script>
+</head>
+<style>
+  label {
+    width: 100px;
+    display: inline-block;
+  }
+  .line {
+    padding: 4px 0;
+  }
+  .line p {
+    margin: 0;
+    color: red;
+    font-size: 12px;
+  }
+</style>
+<body>
+  <form action="">
+    <div class="line">
+      <label for="">姓名</label> <input type="text" validatatype = "default" id="name">
+    </div>
+    <div class="line">
+      <label for="">手机号</label> <input type="text" validatatype="phone">
+    </div>
+    <div class="line">
+      <label for="">身份证号码</label> <input type="text" validatatype="idCard">
+    </div>
+    <div class="line">
+      <label for="">电子邮箱</label> <input type="text" validatatype="email">
+    </div>
+    <div class="line">
+      <label for="">年龄</label> <input type="text" validatatype="num">
+    </div>
+    <div class="line">
+      <label for="">价格</label> <input type="text" validatatype="section" max = "9" min = "0">
+    </div>
+  </form>
+</body>
+<script>
+  function validata(option) {
+    var _this = this;
+    var option = this.option = option;
+    var reg = /^[\s\S]*.*[^\s][\s\S]*$/;
+    var phoneReg = /(^1\d{10}$)|(^[0-9]\d{7}$)/;
+    var idCardReg = /^(\d{15}$|^\d{18}$|^\d{17}(\d|X|x))$/;
+    var emailReg = /^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$/;
+    var max = Number.MAX_VALUE,min =  0;
+    var defaultn = /^(0|[1-9][0-9]*)$/
+    
+    var defaultEvent = option.defaultEvent || 'change';
+    var validataItems = $(option.target).find('[validatatype]');
+    var regs = {
+      "default" : reg,
+      phone: phoneReg,
+      idCard: idCardReg,
+      email: emailReg,
+      section: defaultn,
+    }
+    regs = $.extend({},regs,(option.regs || {}))
+    var valids = Array.prototype.slice.call(validataItems);
+    var errorInfo,isValid;
+    var target = $(option.target).find('input').length === 0 ? option.target : option.target + ' input';
+    var errorInfo = {};
+    this.option.errorInfo = $.extend({},errorInfo,(option.errorInfo || {}))
+    $(target).on(defaultEvent, function(e){
+      // var isValid = valids.every(function(item){
+      //   var value = $(item).val();
+      //   var key = $(item).attr('validatatype');
+      //   var result = regs[key].test(value);
+      //   errorInfo = getErrorMeaasge(key, result);
+      //   return result;
+      // })
+      var value = $(e.target).val();
+      var key = $(e.target).attr('validatatype');
+      if (key === 'section' ) {
+        var text = '请输入正确范围内的数字';
+        if($(e.target).attr('max')) {max = $(e.target).attr('max');text += '，最大值是'+max}
+        if($(e.target).attr('min')) {min = $(e.target).attr('min');text += '，最小值是'+min}
+        _this.option.errorInfo['section_'+e.timeStamp] = text;
+        isValid = regs[key].test(value) && ( value >= Number(min) && value <= Number(max) );
+        key = 'section_'+e.timeStamp
+      } else {
+        isValid = regs[key].test(value);
+      }
+      errorInfo = getErrorMeaasge(key, isValid);
+      if(errorInfo && !isValid) {
+        $(e.target).parent().find('p').remove()
+        $(e.target).parent().append('<p>'+errorInfo+'</p>')
+      }
+      if(isValid) {
+        $(e.target).parent().find('p').remove()
+      }
+    })
+    function getErrorMeaasge(key,result) {
+      var _option = this.option
+      switch(key) {
+        case 'default': 
+          return result ? ' ' : '请输入必填内容';break
+        case 'phone': 
+          return result ? ' ' : '请输入正确的手机号码';break
+        case 'idCard':
+          return result ? ' ' :  '请输入正确的身份证号码';break
+        case 'email':
+          return result ? ' ' : '请输入正确的邮箱地址';break
+        default:
+          return result ? ' ' : _option.errorInfo[key];break
+      }
+    }
+  }
+  validata({
+    target: "form",
+    defaultEvent: 'input',
+    regs: {
+      num: /^[0-9]*$/,
+    },
+    errorInfo: {
+      num: '请输入正确的数字'
+    }
+  })
+</script>
+</html>

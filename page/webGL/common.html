@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>common_draw</title>
+  <script src = "./gl.js"></script>
+</head>
+<body>
+  <canvas width = "250px" height = "400px" id = "canvas"></canvas>
+</body>
+<script>
+  var gl = gl("canvas");
+  var VSHADER_SOURCE = `
+    attribute vec4 a_Position;
+    uniform vec4 u_Translation; // 定义平移变量
+    uniform float u_sinB, u_cosB;
+    void main(){
+      gl_Position.x = (a_Position.x + u_Translation.x) * u_cosB - (a_Position.y + u_Translation.y) * u_sinB;
+      gl_Position.y = (a_Position.x + u_Translation.x) * u_sinB + (a_Position.y + u_Translation.y) * u_cosB;
+      gl_Position.z = a_Position.z + u_Translation.z;
+      gl_Position.w = 1.5;
+      // gl_PointSize = 3.0;
+    }
+  `
+  var FSHADER_SOURCE = `
+    void main(){
+      gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+    }
+  `
+  var program =  initSource(gl, VSHADER_SOURCE, FSHADER_SOURCE);
+  var data = [
+    0.0, 0.0,
+    0.0, 0.5,
+    0.5, 0.5,
+    0.5, 0.0,
+    // 0.0, 0.0,
+  ]
+  //设置三个方向的平移量
+  var Tx = -0.3,Ty = -0.3, Tz = 0.0
+  //获取u_Translation变量,
+  var u_Translation = gl.getUniformLocation(program, "u_Translation");
+  // 赋值
+  gl.uniform4f(u_Translation, Tx, Ty, Tz, 0.0);
+  
+  var angle = 45.0;
+  var radin = Math.PI * angle / 180;
+  var cosB = Math.cos(radin);
+  var sinB = Math.sin(radin);
+
+  var u_sinB = gl.getUniformLocation(program, "u_sinB");
+  var u_cosB = gl.getUniformLocation(program, "u_cosB");
+  gl.uniform1f(u_sinB, sinB)
+  gl.uniform1f(u_cosB, cosB)
+  var n = initVertexBuffers(gl, program, data ,2);
+  // gl.drawArrays(gl.TRIANGLES, 0, 3)
+  // gl.drawArrays(gl.LINE_STRIP, 0, 5)
+  gl.drawArrays(gl.LINE_LOOP, 0, 4)
+</script>
+</html>

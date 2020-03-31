@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Page_10</title>
+  <script src="../../js/lib/jquery-1.10.2.min.js"></script>
+</head>
+<style>
+  html, body{
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  div {
+    box-sizing: border-box;
+  }
+  .imgBody {
+    /* width: 200px;
+    height: 200px;
+    background: url(../../img/marker.png) no-repeat;
+   */
+  }
+  .loading {
+    /* width: 100%; */
+    height: 10px;
+    margin: 10px 5px;
+  }
+</style>
+<body>
+  <input type="file">
+  <div class="imgBody">
+    
+  </div>
+  <div class="loading"></div>
+</body>
+<script>
+  $(function(){
+    $('input[type = file]').on('change',function(){
+      loadImage(this.files[0])
+    })
+    
+    function loadImage(file) {
+      var image = new Image();
+      image.width = "200",
+      image.height = "200";
+      loading(file,function(src){
+        // image.onload = function(){
+         image.src = src;
+         $('.imgBody').empty().append(image);
+         image.onload = function(){
+           getColors(image,function(colors){
+             var color = 'rgb('+colors[0][0]+','+colors[0][1]+','+colors[0][2]+')'
+             $('.imgBody').css("background",color)
+           })
+           
+         }
+          
+        // }
+      })
+    }
+    function loading(file,fn){
+      var url = '';
+      if (window.createObjectURL != undefined) {
+        // basic
+        url = window.createObjectURL(file);
+      } else if (window.URL != undefined) {
+        // mozilla(firefox)
+        url = window.URL.createObjectURL(file);
+      } else if (window.webkitURL != undefined) {
+        // webkit or chrome
+        url = window.webkitURL.createObjectURL(file);
+      }
+      if(fn) {
+        fn(url);
+      }
+    }
+    function getColors(img,fn){
+      var canvas = document.createElement('canvas');
+      var content = canvas.getContext('2d');
+      var width = canvas.width = 200,
+        height = canvas.height = 200;
+      content.drawImage(img, 0, 0, width, height);
+      var imgData = content.getImageData(0, 0, width, height).data;
+      var total = imgData.length / 4;
+      var colorMap = {};
+      var rMin = 255, rMax = 0, gMin = 255, gMax = 0, bMax = 0, bMin = 255;
+      for(var i = 0; i < total; i++) {
+        var r = imgData[i*4], g = imgData[i*4 + 1], b = imgData[i*4 + 2];
+        rMin = rMin > r ? r : rMin;
+        rMax = rMax < r ? r : rMax;
+        gMin = gMin > g ? g : gMin;
+        gMax = gMax < g ? g : gMax;
+        bMin = bMin > b ? b : bMin;
+        bMax = bMax < b ? b : bMax;
+        
+      }
+      // 计算出现每个颜色的出现次数.
+      var colorRange = [[rMin, rMax], [gMin, gMax], [bMin, bMax]];
+      var box = getReat(colorRange, total, imgData);
+      function cut(boxs, num){
+        while(boxs.length < num) {
+          boxs.sort(function(a, b){
+            return a.rank - b.rank;
+          })
+          var colorBox = boxs.pop();
+          var result = cutReat(colorBox);
+          boxs = boxs.concat(result);
+          // console.log(boxs)
+        }
+        return boxs.slice(0, num)
+      }
+      var boxs = cut([box],8)
+      var cR = [];
+      for(var i = 0; i < boxs.length; i++ ){
+        cR.push(boxs[i].getColor())
+      }
+      if(fn) {
+        fn(cR);
+      }
+    }
+    function quickSort(arr){
+      if (arr.length < 1) return arr;
+      var left = [], right = [];
+      var medianIndex = Math.floor(arr.length / 2);
+      var median = arr.splice(medianIndex, 1)[0];
+      for(var i = 0; i < arr.length; i++) {
+        if(arr[i].count <= median.count) {
+          left.push(arr[i])
+        } else {
+          right.push(arr[i])
+        }
+      }
+      return quickSort(left).concat([median], quickSort(right))
+    }
+    
+    function getReat(colorRange, total, data) {
+      var volumn = (colorRange[0][1] - colorRange[0][0]) * (colorRange[1][1] - colorRange[1][0]) * (colorRange[2][1] - colorRange[2][0]);
+      var box = {
+        colorRange: colorRange,
+        total: total,
+        data: data,
+        volumn: volumn,
+        rank: total * volumn,
+        getColor: function(){
+          let total = this.total;
+          let data = this.data;
+          
+          let rCount = 0,
+            gCount = 0,
+            bCount = 0;
+           
+          for (var i = 0; i < total; i++) {
+            rCount += data[i * 4]; //获取平均色值
+            gCount += data[i * 4 + 1];
+            bCount += data[i * 4 + 2];
+          }
+          return [parseInt(rCount / total), parseInt(gCount / total), parseInt(bCount / total)] 
+        }
+      }
+      return box;
+    }
+    
+    function cutReat(colorBox) {
+      var total = colorBox.total,
+        data = colorBox. data,
+        colorRange = colorBox.colorRange,
+        range = [], colorMap = {};
+      for(var i = 0; i < 3; i++) {
+        range.push(colorRange[i][1] - colorRange[i][0])
+      }
+      var colorSide = range.indexOf(Math.max(range[0], range[1], range[2])) //获取较长边进行切割
+      for (var i = 0; i < total; i++) {
+        var color = data[i*4 + colorSide]; //获取较长边的颜色
+        if (colorMap[color]) {
+          colorMap[color] += 1;
+        } else {
+          colorMap[color] = 1;
+        }
+      }
+      var arr = [];
+      for(var key in colorMap) {
+        arr.push({
+          color: key,
+          count: colorMap[key],
+        })
+      }
+      var resultArr = quickSort(arr, "count"); // 根据色值快速排序
+      var middleCount = 0, middleIndex = parseInt(resultArr.length / 2);
+      for(var i = 0; i< middleIndex; i++) {
+        middleCount += resultArr[i].count;
+      }
+      var cutValue = resultArr[middleIndex].color,
+        cutCount = middleCount,
+        arr1 = arr2 = [];
+      colorRange.forEach(function(item){
+        arr1.push(item.slice());
+        arr2.push(item.slice());
+      });
+      arr1[colorSide][1] = +cutValue;
+      arr2[colorSide][0] = +cutValue; // 重新确定范围；
+      var nRange = [arr1, arr2];
+      var box1 = getReat(nRange[0], cutCount, data.slice(0, cutCount*4))
+      var box2 = getReat(nRange[1],  total - cutCount, data.slice(cutCount * 4))
+      return [box1, box2]
+    }
+  })
+</script>
+</html>
