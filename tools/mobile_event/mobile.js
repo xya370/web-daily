@@ -1,4 +1,13 @@
-(function(window){
+'use strict';
+(function(root, factory) {
+  if (typeof defined == "function" && defined.amd) {
+    defined([],factory)
+  } else if (typeof exports == 'object') {
+    module.export = factory();
+  } else {
+    root.mobileEvent = factory();
+  }
+})(this,function() {
   var mobileEvent = function (selectDom) {
     return mobileEvent.prototype.init(selectDom)
   }
@@ -158,5 +167,6 @@
   function isFunction (fn) {
     return toString.call(fn) === "[object Function]"
   }
-  window.mobileEvent = mobileEvent;
-})(window)
+  mobileEvent.prototype.constructor = mobileEvent;
+  return mobileEvent;
+})
